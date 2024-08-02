@@ -1,15 +1,17 @@
 import 'package:app_ahorro/widgets/custom_inputs.dart';
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class RegistroPage extends StatelessWidget {
   RegistroPage({super.key});
 
+  final supabase = Supabase.instance.client;
   final nombreController = TextEditingController();
   final correoController = TextEditingController();
-  final telefonoController = TextEditingController();
   final contraseniaController = TextEditingController();
   final confirmcontraController = TextEditingController();
   final GlobalKey<FormState> formkey = GlobalKey<FormState>();
+  final List<String> dominios = ['gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com'];
 
   @override
   Widget build(BuildContext context) {
@@ -37,10 +39,6 @@ class RegistroPage extends StatelessWidget {
                           return 'El nombre debe tener al menos 3 caracteres';
                         }
             
-                        if (valor.length > 10) {
-                          return 'El nombre debe tener maximo 10 caracteres';
-                        }
-            
                         return null;
                       }, 
                       teclado: TextInputType.text,   
@@ -64,12 +62,12 @@ class RegistroPage extends StatelessWidget {
                           return 'El correo solo debe tener un arroba';
                         }
 
-                        if ((valor.contains('@') && valor.contains('.edu.hn') && valor.substring(valor.indexOf('@')+1, valor.indexOf('.edu.hn')).isNotEmpty) == false) {
-                          return 'El correo debe tener un dominio';
+                        if ((valor.contains('@') && dominios.any((dominio) => valor.contains(dominio)) && valor.substring(valor.indexOf('@')+1, valor.indexOf('.com')).isNotEmpty) == false) {
+                          return 'El correo es invalido';
                         }
             
-                        if(valor.endsWith('.edu.hn') == false){
-                          return 'El correo no es valido, debe terminar en ".edu.hn"';
+                        if(dominios.any((dominio) => valor.endsWith('.com')) == false){
+                          return 'El correo no es valido';
                         }
             
                         return null;
@@ -80,48 +78,21 @@ class RegistroPage extends StatelessWidget {
                         icono: Icons.email
                       ),
                       const SizedBox(height: 20,),
-                      CustomInputs(
-                        controller: telefonoController, 
-                        validator: (valor) {
-                          if (valor == null || valor.isEmpty) {
-                          return 'El telefono es obligatorio';
-                        }
-            
-                        if (valor.length < 8 || valor.length > 8) {
-                          return 'El telefono debe de ser de 8 numeros';
-                        }
-
-                        if (valor.startsWith('3') == false && valor.startsWith('9') == false) {
-                          return 'El numero es invalido, debe iniciar con 3 o 9';
-                        }
-            
-                        return null;
-                        }, 
-                        teclado: TextInputType.phone, 
-                        nombrelabel: 'Telefono',
-                        hint: 'Ingrese su telefono', 
-                        icono: Icons.phone
-                      ),
-                      const SizedBox(height: 20,),
                       PasswordInput(
                         nombrelabel: 'Contraseña',
                         hint: 'Ingrese su contraseña', 
                         controller: contraseniaController,
                         validator: (valor) {
                           if (valor == null || valor.isEmpty) {
-                          return 'El nombre es obligatorio';
+                          return 'Este campo es obligatorio';
                         }
             
                         if (valor.length < 8) {
                           return 'La contraseña debe tener al menos 8 caracteres';
                         }
             
-                        if (valor.contains(RegExp(r'[A-Z]')) == false) {
-                          return 'La contraseña es invalida, debe al menos tener una mayuscula';
-                        }
-            
-                        if (valor.contains(RegExp(r'^(?=.*?[!@#\$&*~_&-])')) == false) {
-                          return 'La contraseña debe contener un caracter especial';
+                        if (valor.contains(RegExp(r'[A-Z]')) == false && valor.contains(RegExp(r'^(?=.*?[!@#\$&*~_&-])')) == false) {
+                          return 'La contraseña debe contener una mayuscula y un caracter especial';
                         }
             
                         return null;
@@ -160,19 +131,18 @@ class RegistroPage extends StatelessWidget {
                                      fontWeight: FontWeight.bold,
                                      fontStyle: FontStyle.italic,
                                      color: Colors.black),),
-            onPressed: () {
-              if(!formkey.currentState!.validate()) return;
-              final datos = {
-                'nombre': nombreController.text,
-                'correo': correoController.text,
-                'telefono': telefonoController.text,
-                'contraseña': contraseniaController.text,
-                'confirmarContraseña': confirmcontraController.text
-              };
-            
-              print(datos);  
-            
-            },
+          onPressed: () async {
+            final nombre = nombreController.text.trim();
+            final email = correoController.text.trim();
+            final password = contraseniaController.text.trim();
+              if (!formkey.currentState!.validate()) return;
+              await supabase.from('usuarios').insert({
+                'nombre': nombre,
+                'email': email,
+                'password': password
+              });
+          },
+
             ),
           ),
           ],
