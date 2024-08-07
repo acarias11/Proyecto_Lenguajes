@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SetAccountDetailsScreen extends StatefulWidget {
   const SetAccountDetailsScreen({super.key});
@@ -12,6 +13,8 @@ class _SetAccountDetailsScreenState extends State<SetAccountDetailsScreen> {
   final _formKey = GlobalKey<FormState>();
   String _tipoCuenta = '';
   String _nombreCuenta = '';
+
+  final supabase = Supabase.instance.client;
 
   @override
   Widget build(BuildContext context) {
@@ -56,16 +59,35 @@ class _SetAccountDetailsScreenState extends State<SetAccountDetailsScreen> {
               ),
               const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   if (_formKey.currentState!.validate()) {
                     _formKey.currentState!.save();
+
+                    // Guardar los datos en Supabase
+                    final response = await supabase.from('cuentas').insert({
+                      'usuario_id':
+                          1, // Aquí debes establecer el ID del usuario actual
+                      'tipo': _tipoCuenta,
+                      'nombre': _nombreCuenta,
+                      'moneda': moneda, // Aquí se incluye el ID de la moneda
+                    });
+
+                    // Obtener el ID de la cuenta recién creada
+                    final selectResponse = await supabase
+                        .from('cuentas')
+                        .select('id')
+                        .eq('usuario_id',
+                            1) // Aquí debes establecer el ID del usuario actual
+                        .eq('tipo', _tipoCuenta)
+                        .eq('nombre', _nombreCuenta)
+                        .eq('moneda', moneda)
+                        .single();
+                    final selectResponseId = selectResponse['id'];
                     Navigator.pushNamed(
                       context,
                       '/set_cash_balance',
                       arguments: {
-                        'moneda': moneda,
-                        'tipoCuenta': _tipoCuenta,
-                        'nombreCuenta': _nombreCuenta,
+                        'idCuenta': selectResponseId,
                       },
                     );
                   }

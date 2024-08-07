@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SetCashBalanceScreen extends StatefulWidget {
   const SetCashBalanceScreen({super.key});
@@ -10,14 +11,14 @@ class SetCashBalanceScreen extends StatefulWidget {
 class _SetCashBalanceScreenState extends State<SetCashBalanceScreen> {
   final _formKey = GlobalKey<FormState>();
   String _saldo = '';
+  final supabase = Supabase.instance.client;
 
   @override
   Widget build(BuildContext context) {
-    final Map<String, String> args =
-        ModalRoute.of(context)!.settings.arguments as Map<String, String>;
-    final String moneda = args['moneda']!;
-    final String tipoCuenta = args['tipoCuenta']!;
-    final String nombreCuenta = args['nombreCuenta']!;
+    // Obtener el ID de la cuenta pasada como argumento
+    final Map<String, dynamic> args =
+        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    final int cuentaId = args['idCuenta'] as int;
 
     return Scaffold(
       appBar: AppBar(
@@ -48,15 +49,25 @@ class _SetCashBalanceScreenState extends State<SetCashBalanceScreen> {
               ),
               const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   if (_formKey.currentState!.validate()) {
                     _formKey.currentState!.save();
+                    // Guardar el saldo inicial en la tabla ingresos
+                    final response = await supabase.from('ingresos').insert({
+                      'cuenta_id': cuentaId,
+                      'monto': _saldo,
+                      'categoria_id': 1, // Puedes ajustar esto según sea necesario en este caso ingresos inicial
+                      'descripcion': 'Ingreso inicial',
+                      'fecha': DateTime.now().toIso8601String(), // Puedes ajustar la fecha según sea necesario
+                    });
 
-                    print('Moneda: $moneda');
-
-                    print('Tipo de Cuenta: $tipoCuenta');
-                    print('Nombre de la Cuenta: $nombreCuenta');
-                    print('Saldo: $_saldo');
+                    if (response.error == null) {
+                      // Navegar a la siguiente pantalla o mostrar un mensaje de éxito
+                      print('Ingreso registrado exitosamente');
+                      print(response);
+                    } else {
+                      print('Error al guardar el ingreso: ${response.error!.message}');
+                    }
                   }
                 },
                 child: const Text('Confirmar saldo Inicial'),
