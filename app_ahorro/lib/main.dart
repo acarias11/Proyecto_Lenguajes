@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myapp/screens/RegisterExpenseScreen.dart';
 import 'package:myapp/screens/RegisterIncomeScreen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'screens/select_currency_screen.dart';
@@ -27,7 +28,8 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
-        '/': (context) => const RegisterIncomeScreen(),
+        '/': (context) => const RegisterExpenseScreen(),
+        '/RegisterIncomeScreen': (context) => const RegisterIncomeScreen(),
         '/select_currency_screen': (context) => const SelectCurrencyScreen(),
         '/set_account_details': (context) =>
             const SetAccountDetailsScreen(), // Cambiamos el orden aquí
