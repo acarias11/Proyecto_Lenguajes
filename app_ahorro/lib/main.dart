@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myapp/screens/RegisterIncomeScreen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'screens/select_currency_screen.dart';
 import 'screens/set_cash_balance_screen.dart';
@@ -26,9 +27,12 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
-        '/': (context) => const SelectCurrencyScreen(),
-        '/set_account_details': (context) => const SetAccountDetailsScreen(), // Cambiamos el orden aquí
-        '/set_cash_balance': (context) => const SetCashBalanceScreen(), // Y aquí
+        '/': (context) => const RegisterIncomeScreen(),
+        '/select_currency_screen': (context) => const SelectCurrencyScreen(),
+        '/set_account_details': (context) =>
+            const SetAccountDetailsScreen(), // Cambiamos el orden aquí
+        '/set_cash_balance': (context) =>
+            const SetCashBalanceScreen(), // Y aquí
       },
     );
   }
