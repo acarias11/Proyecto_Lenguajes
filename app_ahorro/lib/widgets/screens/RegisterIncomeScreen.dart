@@ -31,20 +31,16 @@ class _RegisterIncomeScreenState extends State<RegisterIncomeScreen> {
   }
 
   Future<void> _fetchCuentas() async {
-    try {
-      final response = await supabase.from('cuentas').select('id, nombre');
-      print('Response cuentas: $response');
+    final response = await supabase.from('cuentas').select('id, nombre');
+    print('Response cuentas: $response');
 
-      setState(() {
-        _cuentas = List<Map<String, dynamic>>.from(response.map((cuenta) => {
-              'id': cuenta['id'],
-              'nombre': cuenta['nombre'],
-            }));
-        _cuenta = _cuentas.isNotEmpty ? _cuentas[0]['id'].toString() : '';
-      });
-    } catch (error) {
-      print('Error fetching cuentas: $error');
-    }
+    setState(() {
+      _cuentas = List<Map<String, dynamic>>.from(response.map((cuenta) => {
+            'id': cuenta['id'],
+            'nombre': cuenta['nombre'],
+          }));
+      _cuenta = _cuentas.isNotEmpty ? _cuentas[0]['id'].toString() : '';
+    });
   }
 
   Future<void> _fetchCategorias() async {
@@ -56,14 +52,56 @@ class _RegisterIncomeScreenState extends State<RegisterIncomeScreen> {
       print('Response categorias: $response');
 
       setState(() {
-        _categorias = List<Map<String, dynamic>>.from(response.map((categoria) => {
-              'id': categoria['id'],
-              'nombre': categoria['nombre'],
-            }));
-        _categoria = _categorias.isNotEmpty ? _categorias[0]['id'].toString() : '';
+        _categorias =
+            List<Map<String, dynamic>>.from(response.map((categoria) => {
+                  'id': categoria['id'],
+                  'nombre': categoria['nombre'],
+                }));
+        _categoria =
+            _categorias.isNotEmpty ? _categorias[0]['id'].toString() : '';
       });
     } catch (error) {
       print('Error fetching categorias: $error');
+    }
+  }
+
+  Future<void> _registerIncome() async {
+    final monto = double.tryParse(_montoController.text);
+    final descripcion = _descripcionController.text;
+
+    if (monto == null || descripcion.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text('Por favor ingrese todos los campos correctamente')),
+      );
+      return;
+    }
+
+    try {
+      final response = await supabase.from('ingresos').insert({
+        'monto': monto,
+        'fecha': DateTime.now().toIso8601String(),
+        'categoria_id': int.parse(_categoria),
+        'cuenta_id': int.parse(_cuenta),
+        'descripcion': descripcion,
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Ingreso registrado exitosamente')),
+      );
+
+      // Limpiar los campos después de registrar
+      _montoController.clear();
+      _descripcionController.clear();
+      setState(() {
+        _cuenta = _cuentas.isNotEmpty ? _cuentas[0]['id'].toString() : '';
+        _categoria =
+            _categorias.isNotEmpty ? _categorias[0]['id'].toString() : '';
+      });
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $error')),
+      );
     }
   }
 
@@ -104,7 +142,8 @@ class _RegisterIncomeScreenState extends State<RegisterIncomeScreen> {
                       items: _cuentas.map<DropdownMenuItem<String>>((cuenta) {
                         return DropdownMenuItem<String>(
                           value: cuenta['id'].toString(),
-                          child: Text(cuenta['nombre'], style: const TextStyle(fontSize: 16)),
+                          child: Text(cuenta['nombre'],
+                              style: const TextStyle(fontSize: 16)),
                         );
                       }).toList(),
                     ),
@@ -130,10 +169,12 @@ class _RegisterIncomeScreenState extends State<RegisterIncomeScreen> {
                           _categoria = newValue!;
                         });
                       },
-                      items: _categorias.map<DropdownMenuItem<String>>((categoria) {
+                      items: _categorias
+                          .map<DropdownMenuItem<String>>((categoria) {
                         return DropdownMenuItem<String>(
                           value: categoria['id'].toString(),
-                          child: Text(categoria['nombre'], style: const TextStyle(fontSize: 16)),
+                          child: Text(categoria['nombre'],
+                              style: const TextStyle(fontSize: 16)),
                         );
                       }).toList(),
                     ),
@@ -187,26 +228,18 @@ class _RegisterIncomeScreenState extends State<RegisterIncomeScreen> {
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
-                    Navigator.pushNamed(
-                      context,
-                      '/set_account_details', // Cambia la ruta según tu necesidad
-                      arguments: {
-                        'cuenta': _cuenta,
-                        'categoria': _categoria,
-                        'monto': _montoController.text,
-                        'descripcion': _descripcionController.text,
-                      },
-                    );
+                    _registerIncome();
                   }
                 },
                 style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
                   ),
                 ),
                 child: const Text(
-                  'Confirmar cuenta y categoría',
+                  'Confirmar',
                   style: TextStyle(fontSize: 16),
                 ),
               ),
