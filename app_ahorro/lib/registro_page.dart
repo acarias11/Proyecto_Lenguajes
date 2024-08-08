@@ -1,17 +1,43 @@
+import 'dart:math';
+
+import 'package:app_ahorro/home_page.dart';
 import 'package:app_ahorro/widgets/custom_inputs.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class RegistroPage extends StatelessWidget {
+class RegistroPage extends StatefulWidget {
   RegistroPage({super.key});
 
+  @override
+  State<RegistroPage> createState() => _RegistroPageState();
+}
+
+class _RegistroPageState extends State<RegistroPage> {
   final supabase = Supabase.instance.client;
+
   final nombreController = TextEditingController();
+
   final correoController = TextEditingController();
+
   final contraseniaController = TextEditingController();
+
   final confirmcontraController = TextEditingController();
+
   final GlobalKey<FormState> formkey = GlobalKey<FormState>();
-  final List<String> dominios = ['gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com'];
+
+  Future<void> signUP() async {
+    try {
+      await supabase.auth.signUp(
+        email: correoController.text.trim(),
+        password: contraseniaController.text.trim(),
+        data: {'user': nombreController.text.trim()}
+        );
+        if(!mounted) return;
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyHomePage()));
+    } on AuthException catch(e) {
+      print(e);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,12 +88,8 @@ class RegistroPage extends StatelessWidget {
                           return 'El correo solo debe tener un arroba';
                         }
 
-                        if ((valor.contains('@') && dominios.any((dominio) => valor.contains(dominio)) && valor.substring(valor.indexOf('@')+1, valor.indexOf('.com')).isNotEmpty) == false) {
-                          return 'El correo es invalido';
-                        }
-            
-                        if(dominios.any((dominio) => valor.endsWith('.com')) == false){
-                          return 'El correo no es valido';
+                        if( valor == signUP().catchError((e) => print(e)).toString() ){
+                          return 'El correo ya esta registrado';
                         }
             
                         return null;
@@ -131,16 +153,9 @@ class RegistroPage extends StatelessWidget {
                                      fontWeight: FontWeight.bold,
                                      fontStyle: FontStyle.italic,
                                      color: Colors.black),),
-          onPressed: () async {
-            final nombre = nombreController.text.trim();
-            final email = correoController.text.trim();
-            final password = contraseniaController.text.trim();
-              if (!formkey.currentState!.validate()) return;
-              await supabase.from('usuarios').insert({
-                'nombre': nombre,
-                'email': email,
-                'password': password
-              });
+          onPressed: () {
+            if (!formkey.currentState!.validate()) return;
+            signUP();
           },
 
             ),

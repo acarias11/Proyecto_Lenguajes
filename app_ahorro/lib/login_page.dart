@@ -1,16 +1,36 @@
+import 'package:app_ahorro/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:app_ahorro/widgets/custom_inputs.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-class LoginPage extends StatelessWidget {
-   LoginPage({super.key});
+class LoginPage extends StatefulWidget {
+   const LoginPage({super.key});
 
-  
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final supabase = Supabase.instance.client;
+
   final correocontroller = TextEditingController();
+
   final contracontroller = TextEditingController();
+
   final GlobalKey<FormState> fkey = GlobalKey<FormState>();
 
-    
-
+  Future<void> signIn() async {
+    try {
+      await supabase.auth.signInWithPassword(
+        email: correocontroller.text.trim(),
+        password: contracontroller.text.trim(),
+        );
+        if(!mounted) return;
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const MyHomePage()));
+    } on AuthException catch(e) {
+      print(e);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,11 +89,7 @@ class LoginPage extends StatelessWidget {
                               width: 300,
                               child: ElevatedButton(
                                 onPressed:(){
-                                  Navigator.of(context).popAndPushNamed('home',arguments: {
-                                    'correo': correocontroller.text,
-                                    'contraseña': contracontroller.text,
-                                  }); 
-                                              
+                                signIn();          
                               }, 
                               child:
                                  const Text('Ingresar',
@@ -96,7 +112,7 @@ class LoginPage extends StatelessWidget {
                               width: 300,
                               child: ElevatedButton(
                                 onPressed:(){
-                                 Navigator.of(context).pushNamed('registro');                                                 
+                                 Navigator.of(context).pushNamed('/SignUp');                                                 
           
                               }, 
                               child:

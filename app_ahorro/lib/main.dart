@@ -1,11 +1,13 @@
+import 'package:app_ahorro/login_page.dart';
+import 'package:app_ahorro/registro_page.dart';
+import 'package:app_ahorro/widgets/screens/AddCategoryScreen.dart';
+import 'package:app_ahorro/widgets/screens/RegisterExpenseScreen.dart';
+import 'package:app_ahorro/widgets/screens/RegisterIncomeScreen.dart';
+import 'package:app_ahorro/widgets/screens/select_currency_screen.dart';
+import 'package:app_ahorro/widgets/screens/set_account_details_screen.dart';
+import 'package:app_ahorro/widgets/screens/set_cash_balance_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:myapp/screens/AddCategoryScreen.dart';
-import 'package:myapp/screens/RegisterExpenseScreen.dart';
-import 'package:myapp/screens/RegisterIncomeScreen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'screens/select_currency_screen.dart';
-import 'screens/set_cash_balance_screen.dart';
-import 'screens/set_account_details_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,7 +31,8 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
-        '/': (context) => const AddCategoryScreen(),
+        '/': (context) => const LoginPage(),
+        '/SignUp': (context) => RegistroPage(),
         '/RegisterExpenseScreen': (context) => const RegisterExpenseScreen(),
         '/RegisterIncncomeScreen': (context) => const RegisterIncomeScreen(),
         '/select_currency_screen': (context) => const SelectCurrencyScreen(),
