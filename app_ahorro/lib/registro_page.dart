@@ -1,7 +1,5 @@
-import 'dart:math';
-
-import 'package:app_ahorro/home_page.dart';
 import 'package:app_ahorro/widgets/custom_inputs.dart';
+import 'package:app_ahorro/widgets/screens/select_currency_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -33,10 +31,13 @@ class _RegistroPageState extends State<RegistroPage> {
         data: {'user': nombreController.text.trim()}
         );
         if(!mounted) return;
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyHomePage()));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const SelectCurrencyScreen()));
     } on AuthException catch(e) {
-      print(e);
+      ScaffoldMessenger(child: Text(e.message));
     }
+    final data = supabase.auth.currentUser!.userMetadata;
+    final userid = supabase.auth.currentUser!.id;
+    await supabase.from('usuarios').insert({'id_user': userid, 'nombre': data?['user'], 'email': data?['email']});
   }
 
   @override
@@ -86,10 +87,6 @@ class _RegistroPageState extends State<RegistroPage> {
 
                         if ((valor.length == valor.replaceAll('@', '').length + 1) == false) {
                           return 'El correo solo debe tener un arroba';
-                        }
-
-                        if( valor == signUP().catchError((e) => print(e)).toString() ){
-                          return 'El correo ya esta registrado';
                         }
             
                         return null;
