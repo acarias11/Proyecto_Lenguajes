@@ -1,4 +1,4 @@
-import 'package:app_ahorro/home_page.dart';
+import 'package:app_ahorro/widgets/screens/select_currency_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:app_ahorro/widgets/custom_inputs.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -89,7 +89,7 @@ class _LoginPageState extends State<LoginPage> {
                               width: 300,
                               child: ElevatedButton(
                                 onPressed:(){
-                                signIn();          
+                                  signIn();          
                               }, 
                               child:
                                  const Text('Ingresar',

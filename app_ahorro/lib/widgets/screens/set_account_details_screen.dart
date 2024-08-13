@@ -15,6 +15,7 @@ class _SetAccountDetailsScreenState extends State<SetAccountDetailsScreen> {
   String _nombreCuenta = '';
 
   final supabase = Supabase.instance.client;
+  final userid = Supabase.instance.client.auth.currentUser!.id;
 
   @override
   Widget build(BuildContext context) {
@@ -65,8 +66,8 @@ class _SetAccountDetailsScreenState extends State<SetAccountDetailsScreen> {
 
                     // Guardar los datos en Supabase
                     final response = await supabase.from('cuentas').insert({
-                      'usuario_id':
-                          1, // Aquí debes establecer el ID del usuario actual
+                      'user_id':
+                          userid, // Aquí debes establecer el ID del usuario actual
                       'tipo': _tipoCuenta,
                       'nombre': _nombreCuenta,
                       'moneda': moneda, // Aquí se incluye el ID de la moneda
@@ -76,8 +77,8 @@ class _SetAccountDetailsScreenState extends State<SetAccountDetailsScreen> {
                     final selectResponse = await supabase
                         .from('cuentas')
                         .select('id')
-                        .eq('usuario_id',
-                            1) // Aquí debes establecer el ID del usuario actual
+                        .eq('user_id',
+                            userid) // Aquí debes establecer el ID del usuario actual
                         .eq('tipo', _tipoCuenta)
                         .eq('nombre', _nombreCuenta)
                         .eq('moneda', moneda)
