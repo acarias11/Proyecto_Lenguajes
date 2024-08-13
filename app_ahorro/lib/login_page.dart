@@ -26,7 +26,7 @@ class _LoginPageState extends State<LoginPage> {
         password: contracontroller.text.trim(),
         );
         if(!mounted) return;
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const MyHomePage()));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyHomePage()));
     } on AuthException catch(e) {
       print(e);
     }

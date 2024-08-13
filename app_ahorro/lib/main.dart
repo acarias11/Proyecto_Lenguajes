@@ -1,3 +1,6 @@
+import 'package:app_ahorro/historial_page.dart';
+import 'package:app_ahorro/home_page.dart';
+import 'package:app_ahorro/inicio_page.dart';
 import 'package:app_ahorro/login_page.dart';
 import 'package:app_ahorro/registro_page.dart';
 import 'package:app_ahorro/widgets/screens/AddCategoryScreen.dart';
@@ -29,7 +32,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      initialRoute: '/',
+      initialRoute: 'inicio',
       routes: {
         '/': (context) => const LoginPage(),
         '/SignUp': (context) => RegistroPage(),
@@ -40,6 +43,9 @@ class MyApp extends StatelessWidget {
             const SetAccountDetailsScreen(), // Cambiamos el orden aquí
         '/set_cash_balance': (context) =>
             const SetCashBalanceScreen(), // Y aquí
+        'inicio':(context)=>InicioPage(),
+        'home':(context)=>MyHomePage(),
+        'historial':(context)=>HistorialPage()
       },
     );
   }
