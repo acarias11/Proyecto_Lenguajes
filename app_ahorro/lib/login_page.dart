@@ -2,7 +2,7 @@ import 'package:app_ahorro/widgets/screens/select_currency_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:app_ahorro/widgets/custom_inputs.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
+import 'package:app_ahorro/home_page.dart';
 class LoginPage extends StatefulWidget {
    const LoginPage({super.key});
 
