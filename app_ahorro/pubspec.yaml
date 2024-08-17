@@ -11,14 +11,17 @@ dependencies:
     sdk: flutter
   font_awesome_flutter: ^10.7.0
   charts_flutter: ^0.12.0
-  fl_chart: ^0.36.4
+  fl_chart: ^0.68.0
+  http: ^1.2.2
+  intl: ^0.17.0
+  flutter_dotenv: ^5.1.0
 
 
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^3.0.0
+  flutter_lints: ^4.0.0
   supabase_flutter: ^2.5.11
 
 flutter:
@@ -27,5 +30,6 @@ flutter:
 
   assets:
     - assets/images/
+     
 
 

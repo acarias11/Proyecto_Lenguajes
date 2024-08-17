@@ -26,12 +26,13 @@ class CustomInputs extends StatelessWidget {
       keyboardType: teclado,
       maxLines: 1,
       decoration: InputDecoration(
-        label: Text(nombrelabel),
+        label: Text(nombrelabel,style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Color.fromARGB(255, 8, 90, 8),
+                        ),),
         hintText: hint,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        prefixIcon: Icon(icono),
+        border:const UnderlineInputBorder(),
+        suffixIcon: Icon(icono),
       ),
     );
   }
@@ -69,11 +70,11 @@ class _PasswordInputState extends State<PasswordInput> {
       maxLines: 1,
       decoration: InputDecoration(
         hintText: widget.hint,
-        label: Text(widget.nombrelabel),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        prefixIcon: const Icon(Icons.password),
+        label: Text(widget.nombrelabel,style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Color.fromARGB(255, 8, 90, 8),
+                        ),),
+        border: const UnderlineInputBorder(),
         suffixIcon: IconButton(
                     icon: Icon(
                         contra ? Icons.visibility : Icons.visibility_off),

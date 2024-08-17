@@ -1,6 +1,7 @@
 import 'package:app_ahorro/ahorro_page.dart';
 import 'package:app_ahorro/cuenta_page.dart';
 import 'package:app_ahorro/historial_page.dart';
+import 'package:app_ahorro/items/ingresos_item.dart';
 import 'package:app_ahorro/widgets/graph.dart';
 import 'package:app_ahorro/home_page.dart';
 import 'package:app_ahorro/widgets/screens/AddCategoryScreen.dart';
@@ -32,11 +33,11 @@ class _InicioPageState extends State<InicioPage> {
           currentIndex+index;
           setState(() {});
         },
-        children:const  [
-           MyHomePage(),
-           HistorialPage(),
-           AhorroPage(),
-           GraphPage(),
+        children:  [
+           const MyHomePage(),
+           IngresosItem(),
+           const AhorroPage(),
+           const GraphPage(),
            
         ],
       ),
