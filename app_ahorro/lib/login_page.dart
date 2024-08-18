@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:app_ahorro/widgets/custom_inputs.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -10,7 +9,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final supabase = Supabase.instance.client;
+  //final supabase = Supabase.instance.client;
 
   final correocontroller = TextEditingController();
 
@@ -18,7 +17,7 @@ class _LoginPageState extends State<LoginPage> {
 
   final GlobalKey<FormState> fkey = GlobalKey<FormState>();
 
-  Future<void> signIn(BuildContext context) {
+  /*Future<void> signIn(BuildContext context) {
     return supabase.auth
         .signInWithPassword(
       email: correocontroller.text.trim(),
@@ -33,7 +32,7 @@ class _LoginPageState extends State<LoginPage> {
             .showSnackBar(SnackBar(content: Text(e.message)));
       }
     });
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -109,7 +108,7 @@ class _LoginPageState extends State<LoginPage> {
                             ])),
                         child: OutlinedButton(
                           onPressed: () {
-                            signIn(context);
+                           // signIn(context);
                           },
                           child: const Text(
                             'Ingresar',

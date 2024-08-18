@@ -4,17 +4,13 @@ import 'package:app_ahorro/inicio_page.dart';
 import 'package:app_ahorro/login_page.dart';
 import 'package:app_ahorro/registro_page.dart';
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:app_ahorro/Base%20De%20Datos/db_helper.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Supabase.initialize(
-    url: 'https://aycfiajfrsjrkxkmxqgh.supabase.co',
-    anonKey:
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF5Y2ZpYWpmcnNqcmt4a214cWdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjI0ODU4MTAsImV4cCI6MjAzODA2MTgxMH0.__3i5GG-uXwvAhnrcDrDGEZAf9Lumy-M3Ewhh60YMjs',
-  );
-  runApp(const MyApp());
-}
+  await DBHelper.initDB();
+  runApp(MyApp());}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

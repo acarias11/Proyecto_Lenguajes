@@ -1,6 +1,5 @@
 import 'package:app_ahorro/widgets/custom_inputs.dart';
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class RegistroPage extends StatefulWidget {
   const RegistroPage({super.key});
@@ -10,14 +9,14 @@ class RegistroPage extends StatefulWidget {
 }
 
 class _RegistroPageState extends State<RegistroPage> {
-  final supabase = Supabase.instance.client;
+  //final supabase = Supabase.instance.client;
   final nombreController = TextEditingController();
   final correoController = TextEditingController();
   final contraseniaController = TextEditingController();
   final confirmcontraController = TextEditingController();
   final GlobalKey<FormState> formkey = GlobalKey<FormState>();
 
-  Future<void> signUP(BuildContext context) {
+  /*Future<void> signUP(BuildContext context) {
     return supabase.auth.signUp(
         email: correoController.text.trim(),
         password: contraseniaController.text.trim(),
@@ -38,7 +37,7 @@ class _RegistroPageState extends State<RegistroPage> {
         'email': data?['email']
       });
     });
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -186,7 +185,7 @@ class _RegistroPageState extends State<RegistroPage> {
                             ])),
                         child: OutlinedButton(
                           onPressed: () {
-                            signUP(context);
+                            //signUP(context);
                           },
                           child: const Text(
                             'Registrarse',
