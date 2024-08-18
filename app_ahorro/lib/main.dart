@@ -1,16 +1,8 @@
 import 'package:app_ahorro/historial_page.dart';
 import 'package:app_ahorro/home_page.dart';
 import 'package:app_ahorro/inicio_page.dart';
-import 'package:app_ahorro/items/ingresos_item.dart';
 import 'package:app_ahorro/login_page.dart';
 import 'package:app_ahorro/registro_page.dart';
-import 'package:app_ahorro/widgets/screens/AddCategoryScreen.dart';
-import 'package:app_ahorro/widgets/screens/RegisterExpenseScreen.dart';
-import 'package:app_ahorro/widgets/screens/RegisterIncomeScreen.dart';
-import 'package:app_ahorro/widgets/screens/select_currency_screen.dart';
-import 'package:app_ahorro/widgets/screens/set_account_details_screen.dart';
-import 'package:app_ahorro/widgets/screens/set_cash_balance_screen.dart';
-import 'package:app_ahorro/widgets/screens/welcome_screen_page.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -35,20 +27,13 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      initialRoute: 'inicio',
+      initialRoute: '/',
       routes: {
         '/': (context) => const LoginPage(),
-        '/SignUp': (context) => RegistroPage(),
-        '/RegisterExpenseScreen': (context) => const RegisterExpenseScreen(),
-        '/RegisterIncncomeScreen': (context) => const RegisterIncomeScreen(),
-        '/select_currency_screen': (context) => const SelectCurrencyScreen(),
-        '/set_account_details': (context) =>
-            const SetAccountDetailsScreen(), // Cambiamos el orden aquí
-        '/set_cash_balance': (context) =>
-            const SetCashBalanceScreen(), // Y aquí
-        'inicio':(context)=>LoginPage(),
-        'home':(context)=>MyHomePage(),
-        'historial':(context)=>HistorialPage()
+        '/signUp': (context) => const RegistroPage(),
+        'inicio':(context)=> const InicioPage(),
+        'home':(context)=> const MyHomePage(),
+        'historial':(context)=> const HistorialPage()
       },
     );
   }

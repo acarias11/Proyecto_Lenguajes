@@ -2,7 +2,6 @@ import 'package:app_ahorro/ahorro_page.dart';
 import 'package:app_ahorro/cuenta_page.dart';
 import 'package:app_ahorro/historial_page.dart';
 import 'package:app_ahorro/widgets/graph.dart';
-import 'package:app_ahorro/widgets/screens/AddCategoryScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
