@@ -43,19 +43,47 @@ class _RegistroPageState extends State<RegistroPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Registro'),
-      ),
       body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Form(
-                key: formkey,
-                child: Column(
+          child: Stack(
                   children: [
-                    CustomInputs(
+            Container(
+              height: 900,
+              width: 600,
+              decoration: const BoxDecoration(
+             gradient: LinearGradient(
+               colors: [
+                 Color.fromARGB(255, 8, 90, 8),
+                 Color.fromARGB(255, 3, 49, 23),
+               ]
+             )
+                   ),
+              child: const Padding(
+                padding: EdgeInsets.only(top: 60.0, left: 22),
+                child: Text(
+                  'Crea tu \ncuenta!',
+                  style: TextStyle(
+                      fontSize: 30,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 200.0),
+              child: Container(
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(40), topRight: Radius.circular(40)),
+                  color: Colors.white,
+                ),
+                height: 690,
+                width: 600,
+                child:  Padding(
+                  padding: const EdgeInsets.only(left: 18.0,right: 18),
+                  child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                     CustomInputs(
                       controller: nombreController, 
                       validator: (valor) {
                         if (valor == null || valor.isEmpty) {
@@ -73,7 +101,8 @@ class _RegistroPageState extends State<RegistroPage> {
                       hint: 'Ingrese su Nombre', 
                       icono: Icons.person
                       ),
-                      const SizedBox(height: 20,),
+                                         const SizedBox(height: 20,),
+            
                       CustomInputs(
                         controller: correoController, 
                         validator: (valor) {
@@ -97,7 +126,8 @@ class _RegistroPageState extends State<RegistroPage> {
                         icono: Icons.email
                       ),
                       const SizedBox(height: 20,),
-                      PasswordInput(
+                      
+                       PasswordInput(
                         nombrelabel: 'Contraseña',
                         hint: 'Ingrese su contraseña', 
                         controller: contraseniaController,
@@ -117,7 +147,9 @@ class _RegistroPageState extends State<RegistroPage> {
                         return null;
                       },
                       ),
-                      const SizedBox(height: 20,),
+                                                               const SizedBox(height: 20,),
+
+                          const SizedBox(height: 20,),
                       PasswordInput(
                         nombrelabel: 'Confirmar Contraseña', 
                         hint: 'Confrima tu Contraseña', 
@@ -135,32 +167,47 @@ class _RegistroPageState extends State<RegistroPage> {
                         return null;
                       },
                       ),  
+
+
+
+                     
+                      const SizedBox(height: 70,),
+                       Container(
+                      height: 55,
+                      width: 300,
+                       decoration: const BoxDecoration(
+                         borderRadius: BorderRadius.all(Radius.circular(40)),
+           gradient: LinearGradient(
+             colors: [
+               Color.fromARGB(255, 8, 90, 8),
+               Color.fromARGB(255, 3, 49, 23),
+             ]
+           )
+                 ),
+                      child: OutlinedButton(
+                                  onPressed:(){
+                                    signUP();          
+                                }, 
+                                child:
+                                   const Text('Registrarse',
+                                       style: TextStyle(
+                                       fontSize: 25,
+                                       fontWeight: FontWeight.bold,
+                                       fontStyle: FontStyle.italic,
+                                       color: Colors.white),
+                                       ),
+                                ),
+                              ),
+          
+                      const SizedBox(height: 150,),
                   ],
-                ),
+                  ),
                 ),
               ),
-              const SizedBox(height: 30,),
-          SizedBox(
-            height: 60,
-            width: 300,
-            child: ElevatedButton(
-            child: const Text('Registrar',
-                                     style: TextStyle(
-                                     fontSize: 25,
-                                     fontWeight: FontWeight.bold,
-                                     fontStyle: FontStyle.italic,
-                                     color: Colors.black),),
-          onPressed: () {
-            if (!formkey.currentState!.validate()) return;
-            signUP();
-          },
-
             ),
-          ),
-          ],
+                  ],
+                ),
         ),
-      ),
-        
-    );
+        );
   }
 }

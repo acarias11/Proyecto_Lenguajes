@@ -52,7 +52,7 @@ class _LoginPageState extends State<LoginPage> {
               child: const Padding(
                 padding: EdgeInsets.only(top: 60.0, left: 22),
                 child: Text(
-                  'Hello\nSign in!',
+                  'Bienvenido \ningresa!',
                   style: TextStyle(
                       fontSize: 30,
                       color: Colors.white,
