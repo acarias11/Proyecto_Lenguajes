@@ -29,7 +29,7 @@ class _InicioPageState extends State<InicioPage> {
           setState(() {});
         },
         children:  const [
-           MyHomePage(),
+           HomePage(),
            AhorroPage(),
            GraphPage(),
            

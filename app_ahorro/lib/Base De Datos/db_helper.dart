@@ -9,32 +9,31 @@ import 'package:sqflite/sqflite.dart';
 
 class DBHelper {
   static Database? _db;
-  static const int _version = 1;
-  static const String _cuentasTable = "cuentas";
-  static const String _monedasTable = "monedas";
-  static const String _ingresosTable = "ingresos";
-  static const String _gastosTable = "gastos";
-  static const String _categoriasTable = "categorias";
-  static const String _usuariosTable = "usuarios";
+  static final int _version = 1;
+  static final String _cuentasTable = "cuentas";
+  static final String _monedasTable = "monedas";
+  static final String _ingresosTable = "ingresos";
+  static final String _gastosTable = "gastos";
+  static final String _categoriasTable = "categorias";
+  static final String _usuariosTable = "usuarios";
 
   // Inicializar la base de datos
   static Future<void> initDB() async {
     if (_db != null) return;
 
     try {
-      String path = join(await getDatabasesPath(), 'app_ahorro.db');
+      String _path = join(await getDatabasesPath(), 'app_ahorro.db');
       _db = await openDatabase(
-        path,
+        _path,
         version: _version,
         onCreate: (db, version) {
           db.execute(
             "CREATE TABLE $_cuentasTable ("
             "id INTEGER PRIMARY KEY AUTOINCREMENT,"
-            "userID INT,"
+            "userID TEXT,"
             "nombre TEXT,"
             "tipo TEXT,"
             "moneda TEXT"
-            "FOREIGN KEY (userID) REFERENCES $_usuariosTable (id),"
             ")",
           );
           db.execute(
@@ -78,10 +77,10 @@ class DBHelper {
           db.execute(
             "CREATE TABLE $_usuariosTable ("
             "id INTEGER PRIMARY KEY AUTOINCREMENT,"
-            "userID INT,"
+            "userID TEXT,"
             "nombre TEXT,"
             "email TEXT,"
-            "contraseña TEXT"
+            "contrasena TEXT"
             ")",
           );
         },

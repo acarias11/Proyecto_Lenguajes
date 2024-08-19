@@ -26,11 +26,11 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
-        '/': (context) => const LoginPage(),
+        '/': (context) => const InicioPage(),
         '/signUp': (context) => const RegistroPage(),
         '/inicio': (context) => const InicioPage(),
         '/select_currency_screen': (context) => const SelectCurrencyScreen(),
-        '/home': (context) => const MyHomePage(),
+        '/home': (context) => const HomePage(),
         '/historial': (context) => const HistorialPage()
       },
     );
