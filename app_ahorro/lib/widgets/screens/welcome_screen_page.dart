@@ -1,3 +1,5 @@
+import 'package:app_ahorro/login_page.dart';
+import 'package:app_ahorro/registro_page.dart';
 import 'package:flutter/material.dart';
 
 class WelcomeScreenPage extends StatelessWidget {
@@ -41,8 +43,8 @@ class WelcomeScreenPage extends StatelessWidget {
           const SizedBox(height: 30,),
           GestureDetector(
             onTap: (){
-             // Navigator.push(context,
-                //  MaterialPageRoute(builder: (context) => const loginScreen()));
+              Navigator.push(context,
+               MaterialPageRoute(builder: (context) => const LoginPage()));
             },
             child: Container(
               height: 53,
@@ -61,8 +63,8 @@ class WelcomeScreenPage extends StatelessWidget {
            const SizedBox(height: 30,),
            GestureDetector(
              onTap: (){
-              // Navigator.push(context,
-                  // MaterialPageRoute(builder: (context) => const RegScreen()));
+               Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const RegistroPage()));
              },
              child: Container(
                height: 53,

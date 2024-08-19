@@ -180,9 +180,9 @@ class _RegistroPageState extends State<RegistroPage> {
                             ])),
                         child: OutlinedButton(
                           onPressed: () {
-                            if(formkey.currentState!.validate()) return;
+                            //if(formkey.currentState!.validate()) return;
                             registrarUsuario();
-                            Navigator.of(context).popAndPushNamed('/');
+                            Navigator.of(context).popAndPushNamed('/select_currency_screen');
                           },
                           child: const Text(
                             'Registrarse',

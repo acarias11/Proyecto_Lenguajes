@@ -13,6 +13,7 @@ class _SelectCurrencyScreenState extends State<SelectCurrencyScreen> {
   final listaDeMonedas = [
     Moneda(nombre: 'Dólar', simbolo: '\$'),
     Moneda(nombre: 'Euro', simbolo: '€'),
+    Moneda(nombre: 'Lempira', simbolo: 'L')
   ];
 
   @override
@@ -48,10 +49,10 @@ class _SelectCurrencyScreenState extends State<SelectCurrencyScreen> {
                   ),
             const SizedBox(height: 20),
             ElevatedButton(
-                onPressed: () {
+                   onPressed: () {
                 Navigator.pushNamed(
                   context,
-                  'inicio', 
+                  '/select_account_details', // Cambiamos la ruta aquí
                   arguments: monedaSeleccionada,
                 );
               },
