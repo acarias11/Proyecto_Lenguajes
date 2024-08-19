@@ -19,7 +19,7 @@ class _RegistroPageState extends State<RegistroPage> {
   final GlobalKey<FormState> formkey = GlobalKey<FormState>();
 
   Future<void> registrarUsuario() async {
-    final DataController dataController = Get.find<DataController>();
+    final DataController dataController = Get.put(DataController());
     Usuario registrarUsuario = Usuario(
         nombre: nombreController.text.trim(),
         email: correoController.text.trim(),
@@ -182,7 +182,7 @@ class _RegistroPageState extends State<RegistroPage> {
                           onPressed: () {
                             if(formkey.currentState!.validate()) return;
                             registrarUsuario();
-                            Navigator.of(context).popAndPushNamed('');
+                            Navigator.of(context).popAndPushNamed('/');
                           },
                           child: const Text(
                             'Registrarse',

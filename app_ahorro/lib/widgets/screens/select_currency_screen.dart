@@ -48,7 +48,7 @@ class _SelectCurrencyScreenState extends State<SelectCurrencyScreen> {
                   ),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () {
+                onPressed: () {
                 Navigator.pushNamed(
                   context,
                   '/set_account_details', // Cambiamos la ruta aquí
