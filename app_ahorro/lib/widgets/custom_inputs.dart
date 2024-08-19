@@ -26,7 +26,7 @@ class CustomInputs extends StatelessWidget {
       keyboardType: teclado,
       maxLines: 1,
       decoration: InputDecoration(
-        label: Text(nombrelabel,style: TextStyle(
+        label: Text(nombrelabel,style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Color.fromARGB(255, 8, 90, 8),
                         ),),
@@ -70,7 +70,7 @@ class _PasswordInputState extends State<PasswordInput> {
       maxLines: 1,
       decoration: InputDecoration(
         hintText: widget.hint,
-        label: Text(widget.nombrelabel,style: TextStyle(
+        label: Text(widget.nombrelabel,style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Color.fromARGB(255, 8, 90, 8),
                         ),),

@@ -1,5 +1,8 @@
+import 'package:app_ahorro/Base%20De%20Datos/data_controller.dart';
+import 'package:app_ahorro/Base%20De%20Datos/usuario.dart';
 import 'package:app_ahorro/widgets/custom_inputs.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class RegistroPage extends StatefulWidget {
   const RegistroPage({super.key});
@@ -9,35 +12,27 @@ class RegistroPage extends StatefulWidget {
 }
 
 class _RegistroPageState extends State<RegistroPage> {
-  //final supabase = Supabase.instance.client;
   final nombreController = TextEditingController();
   final correoController = TextEditingController();
   final contraseniaController = TextEditingController();
   final confirmcontraController = TextEditingController();
   final GlobalKey<FormState> formkey = GlobalKey<FormState>();
 
-  /*Future<void> signUP(BuildContext context) {
-    return supabase.auth.signUp(
+  Future<void> registrarUsuario() async {
+    final DataController dataController = Get.find<DataController>();
+    Usuario registrarUsuario = Usuario(
+        nombre: nombreController.text.trim(),
         email: correoController.text.trim(),
-        password: contraseniaController.text.trim(),
-        data: {'user': nombreController.text.trim()}).then((response) {
-      if (!context.mounted) return;
-      Navigator.of(context).popAndPushNamed('/select_currency_screen');
+        contrasena: contraseniaController.text.trim());
+
+    dataController.addUsuario(registrarUsuario).then((_) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Cuenta creada con exito!')));
     }).catchError((e) {
-      if (e is AuthException) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(e.message)));
-      }
-    }).then((_) {
-      final data = supabase.auth.currentUser!.userMetadata;
-      final userid = supabase.auth.currentUser!.id;
-      return supabase.from('usuarios').insert({
-        'id_user': userid,
-        'nombre': data?['user'],
-        'email': data?['email']
-      });
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(e.toString())));
     });
-  }*/
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -185,7 +180,9 @@ class _RegistroPageState extends State<RegistroPage> {
                             ])),
                         child: OutlinedButton(
                           onPressed: () {
-                            //signUP(context);
+                            if(formkey.currentState!.validate()) return;
+                            registrarUsuario();
+                            Navigator.of(context).popAndPushNamed('');
                           },
                           child: const Text(
                             'Registrarse',

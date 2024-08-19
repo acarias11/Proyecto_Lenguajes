@@ -28,11 +28,10 @@ class _InicioPageState extends State<InicioPage> {
           currentIndex+index;
           setState(() {});
         },
-        children:  [
-           const MyHomePage(),
-          // IngresosItem(),
-           const AhorroPage(),
-           const GraphPage(),
+        children:  const [
+           MyHomePage(),
+           AhorroPage(),
+           GraphPage(),
            
         ],
       ),
@@ -69,7 +68,7 @@ class _InicioPageState extends State<InicioPage> {
         ),
           floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton: FloatingActionButton(
-          shape: CircleBorder(),
+          shape: const CircleBorder(),
           child:const Icon(Icons.add),
           onPressed:(){} ,
         ),

@@ -6,9 +6,9 @@ class GraphPage extends StatelessWidget {
  // final List<Item> items;
 
   const GraphPage({
-    Key? key,
+    super.key,
    // required this.items,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +51,7 @@ class GraphPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20.0),
-            Wrap(
+            const Wrap(
               spacing: 8.0,
               runSpacing: 8.0,
               //children: spending.keys
@@ -73,10 +73,9 @@ class _Indicator extends StatelessWidget {
   final String text;
 
   const _Indicator({
-    Key? key,
     required this.color,
     required this.text,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

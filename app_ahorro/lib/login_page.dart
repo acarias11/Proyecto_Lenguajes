@@ -9,7 +9,6 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  //final supabase = Supabase.instance.client;
 
   final correocontroller = TextEditingController();
 
@@ -17,22 +16,22 @@ class _LoginPageState extends State<LoginPage> {
 
   final GlobalKey<FormState> fkey = GlobalKey<FormState>();
 
-  /*Future<void> signIn(BuildContext context) {
-    return supabase.auth
-        .signInWithPassword(
-      email: correocontroller.text.trim(),
-      password: contracontroller.text.trim(),
-    )
-        .then((response) {
-      if (!context.mounted) return;
-      Navigator.of(context).popAndPushNamed('/select_currency_screen');
-    }).catchError((e) {
-      if (e is AuthException) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(e.message)));
-      }
-    });
-  }*/
+  // Future<void> signIn(BuildContext context) {
+  //   return supabase.auth
+  //       .signInWithPassword(
+  //     email: correocontroller.text.trim(),
+  //     password: contracontroller.text.trim(),
+  //   )
+  //       .then((response) {
+  //     if (!context.mounted) return;
+  //     Navigator.of(context).popAndPushNamed('/select_currency_screen');
+  //   }).catchError((e) {
+  //     if (e is AuthException) {
+  //       ScaffoldMessenger.of(context)
+  //           .showSnackBar(SnackBar(content: Text(e.message)));
+  //     }
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -108,7 +107,7 @@ class _LoginPageState extends State<LoginPage> {
                             ])),
                         child: OutlinedButton(
                           onPressed: () {
-                           // signIn(context);
+                            // signIn(context);
                           },
                           child: const Text(
                             'Ingresar',
