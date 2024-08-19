@@ -11,88 +11,47 @@ import 'package:get/get.dart';
 
 
 
-class HomePage extends StatefulWidget {
+class HomePage extends StatelessWidget {
   
   const HomePage({super.key});
-
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-   List<Moneda> _monedas = [];
-
-  @override
-  void initState() {
-    super.initState();
-    _loadMoneda();
-  }
-
-  // Función para cargar usuarios desde la base de datos
-  Future<void> _loadMoneda() async {
-    try {
-      final monedas = await DBHelper.queryMonedas(
-      );
-      setState(() {
-        _monedas = monedas;
-      });
-    } catch (e) {
-      print('Error al cargar usuarios: $e');
-    }
-  }
-     Future<void> agregarMonedas() async {
+  
+     Future<void> agregarUsuarios() async {
       final DataController dataController= Get.put(DataController());
   
-      Moneda moneda1 = Moneda(
+      Usuario usuario1 = Usuario(
         id: 1, 
-        nombre: 'Dolares',
-        simbolo: 'USD'
+        userId: 'u321',
+        nombre: 'Angel Carias',
+        email: 'aacarias@unah.hn',
+        contrasena: '20222001305',
       );
-     Moneda moneda2 = Moneda(
-        id: 2, 
-        nombre: 'Lempiras',
-        simbolo: 'L'
+      Usuario usuario2 = Usuario(
+        id: 2,
+        userId: 'u331',
+        nombre: 'Darlan Perdomo',
+        email: 'darlan.perdomo@unah.hn',
+        contrasena: '20222000729',
       );
-      Moneda moneda3 = Moneda(
-        id: 3, 
-        nombre: 'Euros',
-        simbolo: '€',
-      );
+  
         try {
-      int mon1 = await dataController.addMoneda(moneda1);
-      int mon2 = await dataController.addMoneda(moneda2);
-      int mon3 = await dataController.addMoneda(moneda3);
-      print('Monedas agregados con éxito. IDs: $mon1, $mon2, $mon3');
+      int result1 = await dataController.addUsuario(usuario1);
+      int result2 = await dataController.addUsuario(usuario2);
+      print('Usuarios agregados con éxito. IDs: $result1, $result2');
          } catch (e) {
           print('Error al agregar la cuenta: $e');
              }
       }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Página de Inicio'),
       ),
-      body: Column(
-        children: [
-          ElevatedButton(
-            onPressed: agregarMonedas,
-            child: Text('Agregar Monedas'),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: _monedas.length,
-              itemBuilder: (context, index) {
-                final monedas = _monedas[index];
-                return ListTile(
-                  title: Text(monedas.nombre),
-                  subtitle: Text(monedas.simbolo),
-            );
-            },
-            ),
-          ),
-        ],
+      body: Center(
+        child: ElevatedButton(
+          onPressed: agregarUsuarios,
+          child: Text('Agregar usuario'),
+        ),
       ),
     );
   }

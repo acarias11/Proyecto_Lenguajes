@@ -92,3 +92,4 @@ class _SetAccountDetailsScreenState extends State<SetAccountDetailsScreen> {
     );
   }
 }
+
