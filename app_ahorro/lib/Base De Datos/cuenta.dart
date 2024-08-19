@@ -1,6 +1,6 @@
 class Cuenta {
   int? id; // Llave primaria
-  int userid;
+  String? userid;
   String nombre;
   String tipo;
   String moneda;
@@ -8,7 +8,7 @@ class Cuenta {
   Cuenta({
     this.id,
     required this.nombre,
-    required this.userid,
+    this.userid,
     required this.tipo,
     required this.moneda,
   });

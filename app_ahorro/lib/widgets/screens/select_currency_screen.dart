@@ -51,7 +51,7 @@ class _SelectCurrencyScreenState extends State<SelectCurrencyScreen> {
               onPressed: () {
                 Navigator.pushNamed(
                   context,
-                  '/set_account_details', // Cambiamos la ruta aquí
+                  'inicio', 
                   arguments: monedaSeleccionada,
                 );
               },
