@@ -182,7 +182,7 @@ class _RegistroPageState extends State<RegistroPage> {
                           onPressed: () {
                             //if(formkey.currentState!.validate()) return;
                             registrarUsuario();
-                            Navigator.of(context).popAndPushNamed('/select_currency_screen');
+                            Navigator.of(context).popAndPushNamed('/SetAccountDetailsScreen');
                           },
                           child: const Text(
                             'Registrarse',

@@ -1,4 +1,5 @@
 import 'package:app_ahorro/ahorro_page.dart';
+import 'package:app_ahorro/historial_page.dart';
 import 'package:app_ahorro/widgets/graph.dart';
 import 'package:app_ahorro/home_page.dart';
 import 'package:flutter/material.dart';
@@ -30,6 +31,7 @@ class _InicioPageState extends State<InicioPage> {
         },
         children:  const [
            HomePage(),
+           HistorialPage(),
            AhorroPage(),
            GraphPage(),
            

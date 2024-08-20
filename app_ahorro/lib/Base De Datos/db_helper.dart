@@ -1,4 +1,3 @@
-import 'package:app_ahorro/Base De Datos/categoria.dart';
 import 'package:app_ahorro/Base%20De%20Datos/cuenta.dart';
 import 'package:app_ahorro/Base%20De%20Datos/gasto.dart';
 import 'package:app_ahorro/Base%20De%20Datos/ingreso.dart';
@@ -14,7 +13,6 @@ class DBHelper {
   static final String _monedasTable = "monedas";
   static final String _ingresosTable = "ingresos";
   static final String _gastosTable = "gastos";
-  static final String _categoriasTable = "categorias";
   static final String _usuariosTable = "usuarios";
 
   // Inicializar la base de datos
@@ -49,10 +47,8 @@ class DBHelper {
             "monto REAL,"
             "fecha TEXT,"
             "cuentaId INTEGER,"
-            "categoriaID INTEGER,"
             "descripcion TEXT,"
-            "FOREIGN KEY (cuentaId) REFERENCES $_cuentasTable (id),"
-            "FOREIGN KEY (categoriaID) REFERENCES $_categoriasTable (id)"
+            "FOREIGN KEY (cuentaId) REFERENCES $_cuentasTable (id)"
             ")",
           );
           db.execute(
@@ -61,17 +57,8 @@ class DBHelper {
             "monto REAL,"
             "fecha TEXT,"
             "cuentaId INTEGER,"
-            "categoriaID INTEGER,"
             "descripcion TEXT,"
-            "FOREIGN KEY (cuentaId) REFERENCES $_cuentasTable (id),"
-            "FOREIGN KEY (categoriaID) REFERENCES $_categoriasTable (id)"
-            ")",
-          );
-          db.execute(
-            "CREATE TABLE $_categoriasTable ("
-            "id INTEGER PRIMARY KEY AUTOINCREMENT,"
-            "nombre TEXT,"
-            "tipo TEXT"
+            "FOREIGN KEY (cuentaId) REFERENCES $_cuentasTable (id)"
             ")",
           );
           db.execute(
@@ -197,35 +184,6 @@ class DBHelper {
       whereArgs: [gasto.id],
     );
   }
-
-  // Métodos para Categorías
-  static Future<int> insertCategoria(Categoria? categoria) async {
-    if (_db == null) throw Exception('Database not initialized');
-    return await _db!.insert(_categoriasTable, categoria!.toJson());
-  }
-
-  static Future<List<Categoria>> queryCategorias() async {
-    if (_db == null) throw Exception('Database not initialized');
-    final List<Map<String, dynamic>> maps = await _db!.query(_categoriasTable);
-    return List.generate(maps.length, (i) => Categoria.fromJson(maps[i]));
-  }
-
-  static Future<int> deleteCategoria(int id) async {
-    if (_db == null) throw Exception('Database not initialized');
-    return await _db!
-        .delete(_categoriasTable, where: 'id = ?', whereArgs: [id]);
-  }
-
-  static Future<int> updateCategoria(Categoria categoria) async {
-    if (_db == null) throw Exception('Database not initialized');
-    return await _db!.update(
-      _categoriasTable,
-      categoria.toJson(),
-      where: 'id = ?',
-      whereArgs: [categoria.id],
-    );
-  }
-
   // Métodos para Usuarios
   static Future<int> insertUsuario(Usuario? usuario) async {
     if (_db == null) throw Exception('Database not initialized');

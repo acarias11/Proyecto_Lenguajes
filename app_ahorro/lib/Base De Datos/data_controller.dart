@@ -1,4 +1,3 @@
-import 'package:app_ahorro/Base De Datos/categoria.dart';
 import 'package:app_ahorro/Base%20De%20Datos/cuenta.dart';
 import 'package:app_ahorro/Base%20De%20Datos/db_helper.dart';
 import 'package:app_ahorro/Base%20De%20Datos/gasto.dart';
@@ -15,7 +14,6 @@ class DataController extends GetxController {
     getMonedas();
     getIngresos();
     getGastos();
-    getCategorias();
     getUsuarios();
   }
 
@@ -23,7 +21,6 @@ class DataController extends GetxController {
   var monedaList = <Moneda>[].obs;
   var ingresoList = <Ingreso>[].obs;
   var gastoList = <Gasto>[].obs;
-  var categoriaList = <Categoria>[].obs;
   var usuarioList = <Usuario>[].obs;
 
   // Métodos para Cuentas
@@ -112,28 +109,6 @@ class DataController extends GetxController {
   Future<void> updateGasto(Gasto gasto) async {
     await DBHelper.updateGasto(gasto);
     getGastos();
-  }
-
-  // Métodos para Categorías
-  Future<int> addCategoria(Categoria categoria) async {
-    int result = await DBHelper.insertCategoria(categoria);
-    getCategorias();
-    return result;
-  }
-
-  void getCategorias() async {
-    List<Categoria> categorias = await DBHelper.queryCategorias();
-    categoriaList.assignAll(categorias);
-  }
-
-  Future<void> deleteCategoria(int id) async {
-    await DBHelper.deleteCategoria(id);
-    getCategorias();
-  }
-
-  Future<void> updateCategoria(Categoria categoria) async {
-    await DBHelper.updateCategoria(categoria);
-    getCategorias();
   }
 
   // Métodos para Usuarios

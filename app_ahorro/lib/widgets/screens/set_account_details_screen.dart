@@ -81,7 +81,7 @@ class _SetAccountDetailsScreenState extends State<SetAccountDetailsScreen> {
                 onPressed: () {
                   if (_formKey.currentState!.validate()) return;
                   agregarUsuarios();
-                  Navigator.of(context).popAndPushNamed('/inicio');
+                  Navigator.of(context).popAndPushNamed('/SelectCurrencyScreen');
                 },
                 child: const Text('Registrar cuenta'),
               ),

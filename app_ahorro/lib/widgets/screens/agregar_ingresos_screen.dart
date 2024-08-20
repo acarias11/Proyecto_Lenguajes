@@ -1,31 +1,28 @@
 import 'package:app_ahorro/Base%20De%20Datos/data_controller.dart';
 //import 'package:app_ahorro/Base%20De%20Datos/ingreso.dart';
-import 'package:app_ahorro/Base%20De%20Datos/moneda.dart';
+//import 'package:app_ahorro/Base%20De%20Datos/moneda.dart';
 import 'package:flutter/material.dart';
 import 'package:app_ahorro/Base%20De%20Datos/db_helper.dart';
 import 'package:app_ahorro/Base De Datos/ingreso.dart';
 //import 'package:app_ahorro/Base De Datos/categoria.dart';
-//import 'package:app_ahorro/Base De Datos/usuario.dart';
 import 'package:get/get.dart';
 
 
 
-class HomePage extends StatefulWidget {
+class AgregarIngresosScreen extends StatefulWidget {
   
-  const HomePage({super.key});
+  const AgregarIngresosScreen({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<AgregarIngresosScreen> createState() => _AgregarIngresosState();
 }
 
-class _HomePageState extends State<HomePage> {
-   List<Moneda> _monedas = [];
+class _AgregarIngresosState extends State<AgregarIngresosScreen> {
    List<Ingreso> _ingreso = [];
 
   @override
   void initState() {
     super.initState();
-    _loadMoneda();
     _loadIngreso();
   }
   
@@ -42,40 +39,26 @@ class _HomePageState extends State<HomePage> {
   }
 
 
-  Future<void> _loadMoneda() async {
-    try {
-      final monedas = await DBHelper.queryMonedas(
-      );
-      setState(() {
-        _monedas = monedas;
-      });
-    } catch (e) {
-      print('Error al cargar usuarios: $e');
-    }
-  }
-     Future<void> agregarMonedas() async {
+     Future<void> agregarIngresos() async {
       final DataController dataController= Get.put(DataController());
   
-      Moneda moneda1 = Moneda(
-        id: 1, 
-        nombre: 'Dolares',
-        simbolo: 'USD'
+      Ingreso ingreso1 = Ingreso(
+        monto: 200,
+        fecha: DateTime(2024, 8, 19),
+        cuentaId: 1,
+        descripcion: 'Pollo con Tajadas'
       );
-     Moneda moneda2 = Moneda(
-        id: 2, 
-        nombre: 'Lempiras',
-        simbolo: 'L'
+     Ingreso ingreso2 = Ingreso(
+        monto: 350,
+        fecha: DateTime(2024, 8, 19),
+        cuentaId: 1,
+        descripcion: 'Pelota'
       );
-      Moneda moneda3 = Moneda(
-        id: 3, 
-        nombre: 'Euros',
-        simbolo: '€',
-      );
+      
         try {
-      int mon1 = await dataController.addMoneda(moneda1);
-      int mon2 = await dataController.addMoneda(moneda2);
-      int mon3 = await dataController.addMoneda(moneda3);
-      print('Monedas agregados con éxito. IDs: $mon1, $mon2, $mon3');
+      int in1= await dataController.addIngreso(ingreso1);
+      int int2 = await dataController.addIngreso(ingreso2);
+      print('Ingresos agregados con éxito. IDs: $in1, $int2');
          } catch (e) {
           print('Error al agregar la cuenta: $e');
              }
@@ -90,17 +73,17 @@ class _HomePageState extends State<HomePage> {
       body: Column(
         children: [
           ElevatedButton(
-            onPressed: agregarMonedas,
+            onPressed: agregarIngresos,
             child: Text('Agregar Monedas'),
           ),
           Expanded(
             child: ListView.builder(
-              itemCount: _monedas.length,
+              itemCount: _ingreso.length,
               itemBuilder: (context, index) {
-                final monedas = _monedas[index];
+                final ingreso = _ingreso[index];
                 return ListTile(
-                  title: Text(monedas.nombre),
-                  subtitle: Text(monedas.simbolo),
+                  title: Text(ingreso.descripcion),
+                  subtitle: Text('${ingreso.monto}'),
             );
             },
             

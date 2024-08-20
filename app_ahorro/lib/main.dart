@@ -4,6 +4,7 @@ import 'package:app_ahorro/home_page.dart';
 import 'package:app_ahorro/inicio_page.dart';
 import 'package:app_ahorro/login_page.dart';
 import 'package:app_ahorro/registro_page.dart';
+import 'package:app_ahorro/widgets/screens/agregar_ingresos_screen.dart';
 import 'package:app_ahorro/widgets/screens/select_currency_screen.dart';
 import 'package:app_ahorro/widgets/screens/set_account_details_screen.dart';
 import 'package:app_ahorro/widgets/screens/welcome_screen_page.dart';
@@ -28,7 +29,7 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
-        '/': (context) => const WelcomeScreenPage(),
+        '/': (context) => InicioPage(),
         '/login':(context)=>const LoginPage(),
         '/signUp': (context) => const RegistroPage(),
         '/select_currency_screen': (context) => const SelectCurrencyScreen(),
