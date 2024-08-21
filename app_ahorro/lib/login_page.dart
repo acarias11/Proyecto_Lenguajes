@@ -1,4 +1,5 @@
 import 'package:app_ahorro/Base%20De%20Datos/data_controller.dart';
+import 'package:app_ahorro/Base%20De%20Datos/usuario.dart';
 import 'package:flutter/material.dart';
 import 'package:app_ahorro/widgets/custom_inputs.dart';
 import 'package:get/get.dart';
@@ -11,6 +12,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  String? usuarioParametro;
   final DataController dataController = Get.put(DataController());
   final correocontroller = TextEditingController();
   final contracontroller = TextEditingController();
@@ -89,20 +91,20 @@ class _LoginPageState extends State<LoginPage> {
                           hint: 'Ingrese su contrasenia',
                           controller: contracontroller,
                           validator: (valor) {
-                            if (valor == null || valor.isEmpty) {
-                              return 'La contraseña es obligatoria';
-                            }
+                          if (valor == null || valor.isEmpty) {
+                            return 'La contraseña es obligatoria';
+                          }
 
-                            try {
-                              dataController.usuarioList.firstWhere(
-                                (usuario) => usuario.contrasena == valor,
-                              );
-                            } catch (e) {
-                              return 'Contraseña invalida';
-                            }
+                          try {
+                            usuarioParametro = dataController.usuarioList.firstWhere(
+                              (usuario) => usuario.contrasena == valor,
+                            ).toString();
+                          } catch (e) {
+                            return 'Contraseña inválida';
+                          }
 
-                            return null;
-                          },
+                          return null;
+                        },
                         ),
                         const SizedBox(
                           height: 20,
@@ -123,7 +125,7 @@ class _LoginPageState extends State<LoginPage> {
                           child: OutlinedButton(
                             onPressed: () {
                               if (!fkey.currentState!.validate()) return;
-                              Navigator.of(context).pushReplacementNamed('/');
+                              Navigator.of(context).pushReplacementNamed('/select_account_details', arguments: usuarioParametro);
                             },
                             child: const Text(
                               'Ingresar',

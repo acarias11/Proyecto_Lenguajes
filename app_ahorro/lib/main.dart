@@ -1,4 +1,5 @@
 import 'package:app_ahorro/Base%20De%20Datos/db_helper.dart';
+import 'package:app_ahorro/Base%20De%20Datos/usuario.dart';
 import 'package:app_ahorro/historial_page.dart';
 import 'package:app_ahorro/home_page.dart';
 import 'package:app_ahorro/inicio_page.dart';
@@ -31,9 +32,9 @@ class MyApp extends StatelessWidget {
         '/': (context) => const WelcomeScreenPage(),
         '/login':(context)=>const LoginPage(),
         '/signUp': (context) => const RegistroPage(),
-        '/select_currency_screen': (context) => const SelectCurrencyScreen(),
-        '/select_account_details': (context) => SetAccountDetailsScreen(),
-        '/inicio':(context)=>InicioPage(),
+        // '/select_currency_screen': (context) => const SelectCurrencyScreen(),
+        '/select_account_details': (context) => const SetAccountDetailsScreen(usuario: Usuario),
+        '/inicio':(context)=> const InicioPage(),
         'home': (context) =>  HomePage(),
         'historial': (context) => const HistorialPage()
       },

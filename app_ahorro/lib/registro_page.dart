@@ -1,4 +1,7 @@
+import 'dart:math';
+
 import 'package:app_ahorro/Base%20De%20Datos/data_controller.dart';
+import 'package:app_ahorro/Base%20De%20Datos/db_helper.dart';
 import 'package:app_ahorro/Base%20De%20Datos/usuario.dart';
 import 'package:app_ahorro/widgets/custom_inputs.dart';
 import 'package:email_validator/email_validator.dart';
@@ -13,6 +16,7 @@ class RegistroPage extends StatefulWidget {
 }
 
 class _RegistroPageState extends State<RegistroPage> {
+  List<Usuario> _usuarios = [];
   final nombreController = TextEditingController();
   final correoController = TextEditingController();
   final contraseniaController = TextEditingController();
@@ -20,8 +24,23 @@ class _RegistroPageState extends State<RegistroPage> {
   GlobalKey<FormState> formkey = GlobalKey<FormState>();
   final DataController dataController = Get.put(DataController());
 
+  String generateRandomUserID(int length) {
+    const String validCharacters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+    final Random random = Random();
+    final StringBuffer buffer = StringBuffer();
+
+    for (int i = 0; i < length; i++) {
+      final int randomIndex = random.nextInt(validCharacters.length);
+      buffer.write(validCharacters[randomIndex]);
+    }
+
+    return buffer.toString();
+  }
+
   Future<void> registrarUsuario() async {
+    final String userID = generateRandomUserID(7);
     Usuario registrarUsuario = Usuario(
+        userId: userID,
         nombre: nombreController.text.trim(),
         email: correoController.text.trim(),
         contrasena: contraseniaController.text.trim());
@@ -34,7 +53,7 @@ class _RegistroPageState extends State<RegistroPage> {
           .showSnackBar(SnackBar(content: Text(e.toString())));
     });
   }
-
+  
   @override
   void initState() {
     super.initState();
