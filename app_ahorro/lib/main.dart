@@ -32,9 +32,9 @@ class MyApp extends StatelessWidget {
         '/login':(context)=>const LoginPage(),
         '/signUp': (context) => const RegistroPage(),
         '/select_currency_screen': (context) => const SelectCurrencyScreen(),
-        '/select_account_details': (context) => const SetAccountDetailsScreen(),
-        '/inicio':(context)=>const InicioPage(),
-        'home': (context) =>const HomePage(),
+        '/select_account_details': (context) => SetAccountDetailsScreen(),
+        '/inicio':(context)=>InicioPage(),
+        'home': (context) => const HomePage(),
         'historial': (context) => const HistorialPage()
       },
     );
