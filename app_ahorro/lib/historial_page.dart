@@ -1,13 +1,9 @@
-import 'package:app_ahorro/Base%20De%20Datos/data_controller.dart';
-import 'package:app_ahorro/Base%20De%20Datos/ingreso.dart';
-import 'package:app_ahorro/Base%20De%20Datos/moneda.dart';
-import 'package:app_ahorro/Base De Datos/gasto.dart';
 import 'package:flutter/material.dart';
 import 'package:app_ahorro/Base%20De%20Datos/db_helper.dart';
 import 'package:app_ahorro/Base De Datos/ingreso.dart';
-import 'package:app_ahorro/Base De Datos/cuenta.dart';
-import 'package:app_ahorro/Base De Datos/usuario.dart';
-import 'package:get/get.dart';
+import 'Base De Datos/gasto.dart';
+//import 'package:app_ahorro/Base De Datos/categoria.dart';
+//import 'package:app_ahorro/Base De Datos/usuario.dart';
 
 
 
@@ -21,20 +17,13 @@ class HistorialPage extends StatefulWidget {
 
 class _HistorialPageState extends State<HistorialPage> {
    List<Ingreso> _ingreso = [];
-   List<Usuario> _usuario=[];
-   List<Moneda> _moneda=[];
    List<Gasto> _gastos=[];
-   List<Cuenta> _cuentas=[];
-
 
   @override
   void initState() {
     super.initState();
     _loadIngreso();
-    _loadUsuarios();
-    _loadMoneda();
     _loadGastos();
-    _loadCuenta();
   }
   
   Future<void> _loadIngreso() async {
@@ -48,29 +37,7 @@ class _HistorialPageState extends State<HistorialPage> {
       print('Error al cargar usuarios: $e');
     }
   }
-  Future<void> _loadUsuarios() async {
-    try {
-      final usuarios = await DBHelper.queryUsuarios(
-      );
-      setState(() {
-        _usuario = usuarios;
-      });
-    } catch (e) {
-      print('Error al cargar usuarios: $e');
-    }
-  }
-  Future<void> _loadMoneda() async {
-    try {
-      final moneda = await DBHelper.queryMonedas(
-      );
-      setState(() {
-        _moneda = moneda;
-      });
-    } catch (e) {
-      print('Error al cargar usuarios: $e');
-    }
-  }
-   Future<void> _loadGastos() async {
+  Future<void> _loadGastos() async {
     try {
       final gastos = await DBHelper.queryGastos(
       );
@@ -81,97 +48,66 @@ class _HistorialPageState extends State<HistorialPage> {
       print('Error al cargar usuarios: $e');
     }
   }
-  Future<void> _loadCuenta() async {
-    try {
-      final cuentas = await DBHelper.queryCuentas(
-      );
-      setState(() {
-        _cuentas = cuentas;
-      });
-    } catch (e) {
-      print('Error al cargar usuarios: $e');
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Página de Inicio'),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            SizedBox(
-              height: 100,
-              width: 300,
-              child: ListView.builder(
-                itemCount: _usuario.length,
-                itemBuilder: (context, index) {
-                  final usuario = _usuario[index];
-                  return ListTile(
-                    title: Text('${usuario.id}, ${usuario.userId},${usuario.email}, ${usuario.nombre},  ${usuario.contrasena}'),
-              );
-              }
-              ),
-            ),
-              SizedBox(
-                height: 100,
-              width: 300,
-              child: ListView.builder(
-                itemCount: _cuentas.length,
-                itemBuilder: (context, index) {
-                  final cuentas = _cuentas[index];
-                  return ListTile(
-                    title: Text('${cuentas.id}, ${cuentas.moneda},${cuentas.nombre} '),
-              );
-              }
-              ),
-            ),
-            
-            SizedBox(
-              height: 100,
-              width: 300,
-              child: ListView.builder(
-                itemCount: _moneda.length,
-                itemBuilder: (context, index) {
-                  final moneda = _moneda[index];
-                  return ListTile(
-                    title: Text('${moneda.id}, ${moneda.nombre},${moneda.simbolo}'),
-              );
-              },
-              
-              ),
-            ),
-             SizedBox(
-              height: 100,
-              width: 300,
-              child: ListView.builder(
-                itemCount: _ingreso.length,
-                itemBuilder: (context, index) {
-                  final ingresos = _ingreso[index];
-                  return ListTile(
-                    title: Text('Ingreso: ${ingresos.descripcion}'),
-                    subtitle: Text('${ingresos.monto} - ${ingresos.fecha}'),
-              );
-              },
-              ),
-            ),
-             SizedBox(
-              height: 100,
-              width: 300,
-              child: ListView.builder(
-                itemCount: _gastos.length,
-                itemBuilder: (context, index) {
-                  final gastos = _gastos[index];
-                  return ListTile(
-                    title: Text('${gastos.id}, ${gastos.monto},${gastos.descripcion}, ${gastos.fecha}'),
-              );
-              },
-              
-              ),
-            ),
-          ],
+      body:  SingleChildScrollView(
+        child: Container(
+          decoration: const BoxDecoration(
+            color: Colors.transparent,
+          ),
+          child: Column(
+            children: [
+                     ListView.builder(
+                shrinkWrap: true,
+                  itemCount: _ingreso.length,
+                  itemBuilder: (context, index) {
+                    final ingresos = _ingreso[index];
+                    return Card(
+                      color: Colors.green[ingresos.monto.truncate()],
+                      margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                      elevation: 4,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      child: ListTile(
+                        contentPadding: const EdgeInsets.all(10.0),
+                        title: Text(
+                          'Ingreso: ${ingresos.descripcion} \t${ingresos.monto}',
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        
+                      ),
+                    );
+                  },
+                ),
+                 ListView.builder(
+                shrinkWrap: true,
+                  itemCount: _gastos.length,
+                  itemBuilder: (context, index) {
+                    final gastos = _gastos[index];
+                    return SizedBox(
+                      child: Card(
+                        color: Colors.red[gastos.monto.truncate()],
+                        margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                        elevation: 4,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        child: ListTile(
+                          contentPadding: const EdgeInsets.all(10.0),
+                          title: Text(
+                            'Gasto: ${gastos.descripcion} \t${gastos.monto}',
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ), 
+                        ),
+                      ),
+                    );
+                  },
+                ),
+            ],
+          ),
         ),
       ),
     );

@@ -1,14 +1,14 @@
+import 'package:app_ahorro/Base%20De%20Datos/gasto.dart';
 import 'package:flutter/material.dart';
 import 'package:app_ahorro/Base%20De%20Datos/db_helper.dart';
-import 'package:app_ahorro/Base%20De%20Datos/ingreso.dart';
 import 'package:app_ahorro/Base%20De%20Datos/cuenta.dart';
 
-class AddIngresoPage extends StatefulWidget {
+class AgregarGastoPage extends StatefulWidget {
   @override
-  _AddIngresoPageState createState() => _AddIngresoPageState();
+  _AgregarGastoPageState createState() => _AgregarGastoPageState();
 }
 
-class _AddIngresoPageState extends State<AddIngresoPage> {
+class _AgregarGastoPageState extends State<AgregarGastoPage> {
   final TextEditingController _montoController = TextEditingController();
   final TextEditingController _descripcionController = TextEditingController();
   List<Cuenta> _cuentas = [];
@@ -31,7 +31,7 @@ class _AddIngresoPageState extends State<AddIngresoPage> {
     }
   }
 
-  void _saveIngreso() async {
+  void _saveGasto() async {
     final monto = double.tryParse(_montoController.text);
     final descripcion = _descripcionController.text;
 
@@ -42,7 +42,7 @@ class _AddIngresoPageState extends State<AddIngresoPage> {
       return;
     }
 
-    final ingreso = Ingreso(
+    final gasto = Gasto(
       monto: monto,
       fecha: DateTime.now(),
       cuentaId: _selectedCuenta!.id,
@@ -50,12 +50,12 @@ class _AddIngresoPageState extends State<AddIngresoPage> {
     );
 
     try {
-      await DBHelper.insertIngreso(ingreso);
+      await DBHelper.insertGasto(gasto);
       Navigator.pop(context);  
     } catch (e) {
       print('Error al agregar ingreso: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Error al agregar el ingreso')),
+        const SnackBar(content: Text('Error al agregar el gasto')),
       );
     }
   }
@@ -64,7 +64,7 @@ class _AddIngresoPageState extends State<AddIngresoPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Agregar Ingreso'),
+        title: Text('Agregar Gasto'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -96,8 +96,8 @@ class _AddIngresoPageState extends State<AddIngresoPage> {
             ),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: _saveIngreso,
-              child: const Text('Guardar Ingreso'),
+              onPressed: _saveGasto,
+              child: const Text('Guardar Gasto'),
             ),
           ],
         ),

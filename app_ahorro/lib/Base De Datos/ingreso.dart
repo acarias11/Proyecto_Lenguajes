@@ -2,14 +2,14 @@ class Ingreso {
   int? id; // Llave primaria
   double monto;
   DateTime fecha;
-  int cuentaId; // Llave foránea que referencia a la clase Cuenta
+  int? cuentaId; // Llave foránea que referencia a la clase Cuenta
   String descripcion;
 
   Ingreso({
     this.id,
     required this.monto,
     required this.fecha,
-    required this.cuentaId,
+     this.cuentaId,
     required this.descripcion,
   });
 

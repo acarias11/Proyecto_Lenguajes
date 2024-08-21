@@ -1,12 +1,10 @@
-import 'package:app_ahorro/Base%20De%20Datos/data_controller.dart';
-//import 'package:app_ahorro/Base%20De%20Datos/ingreso.dart';
-import 'package:app_ahorro/Base%20De%20Datos/moneda.dart';
 import 'package:flutter/material.dart';
 import 'package:app_ahorro/Base%20De%20Datos/db_helper.dart';
 import 'package:app_ahorro/Base De Datos/ingreso.dart';
+import 'Base De Datos/gasto.dart';
 //import 'package:app_ahorro/Base De Datos/categoria.dart';
 //import 'package:app_ahorro/Base De Datos/usuario.dart';
-import 'package:get/get.dart';
+import 'package:app_ahorro/widgets/graph.dart';
 
 
 
@@ -19,14 +17,16 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-   List<Moneda> _monedas = [];
    List<Ingreso> _ingreso = [];
+   List<Gasto> _gastos=[];
 
   @override
   void initState() {
     super.initState();
-    _loadMoneda();
     _loadIngreso();
+    _loadGastos();
+    _deleteIngreso(0);
+    _deleteGastos(0);
   }
   
   Future<void> _loadIngreso() async {
@@ -40,86 +40,118 @@ class _HomePageState extends State<HomePage> {
       print('Error al cargar usuarios: $e');
     }
   }
-
-
-  Future<void> _loadMoneda() async {
+   Future<void> _deleteIngreso(int id) async {
     try {
-      final monedas = await DBHelper.queryMonedas(
+      await DBHelper.deleteIngreso(id);
+      setState(() {
+        _ingreso.removeWhere((ingreso) => ingreso.id == id);
+      });
+    } catch (e) {
+      print('Error al eliminar ingreso: $e');
+    }
+  }
+  Future<void> _deleteGastos(int id) async {
+    try {
+      await DBHelper.deleteGasto(id);
+      setState(() {
+        _gastos.removeWhere((gastos) => gastos.id == id);
+      });
+    } catch (e) {
+      print('Error al eliminar Gastos: $e');
+    }
+  }
+  Future<void> _loadGastos() async {
+    try {
+      final gastos = await DBHelper.queryGastos(
       );
       setState(() {
-        _monedas = monedas;
+        _gastos = gastos;
       });
     } catch (e) {
       print('Error al cargar usuarios: $e');
     }
   }
-     Future<void> agregarMonedas() async {
-      final DataController dataController= Get.put(DataController());
-  
-      Moneda moneda1 = Moneda(
-        id: 1, 
-        nombre: 'Dolares',
-        simbolo: 'USD'
-      );
-     Moneda moneda2 = Moneda(
-        id: 2, 
-        nombre: 'Lempiras',
-        simbolo: 'L'
-      );
-      Moneda moneda3 = Moneda(
-        id: 3, 
-        nombre: 'Euros',
-        simbolo: '€',
-      );
-        try {
-      int mon1 = await dataController.addMoneda(moneda1);
-      int mon2 = await dataController.addMoneda(moneda2);
-      int mon3 = await dataController.addMoneda(moneda3);
-      print('Monedas agregados con éxito. IDs: $mon1, $mon2, $mon3');
-         } catch (e) {
-          print('Error al agregar la cuenta: $e');
-             }
-      }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Página de Inicio'),
-      ),
-      body: Column(
-        children: [
-          ElevatedButton(
-            onPressed: agregarMonedas,
-            child: Text('Agregar Monedas'),
+      body:  SingleChildScrollView(
+        child: Container(
+          decoration: const BoxDecoration(
+            color: Colors.transparent,
           ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: _monedas.length,
-              itemBuilder: (context, index) {
-                final monedas = _monedas[index];
-                return ListTile(
-                  title: Text(monedas.nombre),
-                  subtitle: Text(monedas.simbolo),
-            );
-            },
-            
-            ),
+          child: Column(
+            children: [
+              // Agregar el gráfico aquí
+             const Padding(
+                padding:  EdgeInsets.all(30.0),
+                child: SizedBox(
+                  height: 200, // Ajusta la altura del gráfico
+                  child: LineChartWidget(
+                   gradientColor1: Color.fromARGB(255, 26, 171, 13), gradientColor2: Color.fromARGB(255, 105, 168, 110),
+                   gradientColor3: Color.fromARGB(255, 57, 103, 52), indicatorStrokeColor: Color.fromARGB(255, 0, 0, 0), 
+                  ),
+                ),
+              ),
+              // Lista de ingresos
+               ListView.builder(
+                shrinkWrap: true,
+                  itemCount: _ingreso.length,
+                  itemBuilder: (context, index) {
+                    final ingresos = _ingreso[index];
+                    return Card(
+                      color: Colors.green[ingresos.monto.truncate()],
+                      margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                      elevation: 4,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      child: ListTile(
+                        contentPadding: const EdgeInsets.all(10.0),
+                        title: Text(
+                          'Ingreso: ${ingresos.descripcion} \t${ingresos.monto}',
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                         trailing: IconButton(
+                        icon: const Icon(Icons.delete, color: Colors.red),
+                        onPressed: () => _deleteIngreso(ingresos.id!),
+                      ),
+                      
+                      ),
+                    );
+                  },
+                ),
+                 ListView.builder(
+                shrinkWrap: true,
+                  itemCount: _gastos.length,
+                  itemBuilder: (context, index) {
+                    final gastos = _gastos[index];
+                    return SizedBox(
+                      child: Card(
+                        color: Colors.red[gastos.monto.truncate()],
+                        margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                        elevation: 4,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        child: ListTile(
+                          contentPadding: const EdgeInsets.all(10.0),
+                          title: Text(
+                            'Gasto: ${gastos.descripcion} \t${gastos.monto}',
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                           trailing: IconButton(
+                          icon: const Icon(Icons.delete, color: Colors.green),
+                          onPressed: () => _deleteGastos(gastos.id!),
+                        ),  
+                        ),
+                      ),
+                    );
+                  },
+                ),
+            ],
           ),
-           Expanded(
-            child: ListView.builder(
-              itemCount: _ingreso.length,
-              itemBuilder: (context, index) {
-                final ingresos = _ingreso[index];
-                return ListTile(
-                  title: Text('Ingreso: ${ingresos.descripcion}'),
-                  subtitle: Text('${ingresos.monto} - ${ingresos.fecha}'),
-            );
-            },
-            
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

@@ -2,12 +2,19 @@ import 'package:app_ahorro/ahorro_page.dart';
 import 'package:app_ahorro/historial_page.dart';
 import 'package:app_ahorro/widgets/graph.dart';
 import 'package:app_ahorro/home_page.dart';
+import 'package:app_ahorro/widgets/screens/agregar_gastos_screen.dart';
+import 'package:app_ahorro/widgets/screens/agregar_ingresos_screen.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:animated_floating_buttons/animated_floating_buttons.dart';
+
+
 
 
 class InicioPage extends StatefulWidget {
-  const InicioPage({super.key});
+   const InicioPage({super.key});
 
   @override
   _InicioPageState createState() => _InicioPageState();
@@ -16,11 +23,39 @@ class InicioPage extends StatefulWidget {
 class _InicioPageState extends State<InicioPage> {
    int currentIndex=0;
    final controller =PageController();
+   
+      final GlobalKey<AnimatedFloatingActionButtonState> key =GlobalKey<AnimatedFloatingActionButtonState>();
   
 
 
   @override
   Widget build(BuildContext context) {
+    Widget float1() {
+    return Container(
+      child: FloatingActionButton(
+        backgroundColor: Colors.blue,
+        onPressed: (){
+           Navigator.push(context,MaterialPageRoute(builder: (context) => AddIngresoPage()));
+        },
+        heroTag: "btn2",
+        tooltip: 'Second button',
+        child:Text('Ingresos'),
+      ),
+    );
+}
+Widget float2() {
+    return Container(
+      child: FloatingActionButton(
+        backgroundColor: Colors.red,
+        onPressed: (){
+          Navigator.push(context,MaterialPageRoute(builder: (context) => AgregarGastoPage()));
+        },
+        heroTag: "btn1",
+        tooltip: 'First button',
+        child:Text('Gastos'),
+      ),
+    );
+}
     return Scaffold(
       body: PageView(
         physics: const NeverScrollableScrollPhysics(),
@@ -33,13 +68,15 @@ class _InicioPageState extends State<InicioPage> {
            HomePage(),
            HistorialPage(),
            AhorroPage(),
-           GraphPage(),
+           LineChartWidget(gradientColor1: AppColors.contentColorOrange, gradientColor2: AppColors.contentColorPink,
+           gradientColor3: AppColors.contentColorPurple, indicatorStrokeColor: AppColors.contentColorYellow,),
            
         ],
       ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked, // Centrar el FAB
       bottomNavigationBar:BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
-        backgroundColor: Colors.blueGrey,
+        backgroundColor: CupertinoColors.activeGreen,
         currentIndex: currentIndex,
         onTap: (index){
           currentIndex=index;
@@ -48,7 +85,7 @@ class _InicioPageState extends State<InicioPage> {
         },
         items: const [
           BottomNavigationBarItem(
-              icon: Icon(FontAwesomeIcons.house),
+              icon: Icon(Icons.home),
               label: 'home'
               ),
   
@@ -68,15 +105,25 @@ class _InicioPageState extends State<InicioPage> {
             
          ],
         ),
-          floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        floatingActionButton: FloatingActionButton(
-          shape: const CircleBorder(),
-          child:const Icon(Icons.add),
-          onPressed:(){} ,
-        ),
+         floatingActionButton: Padding(
+           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 70),
+           child: AnimatedFloatingActionButton(
+                   fabButtons: <Widget>[
+              float1(), float2()
+                   ],
+                   key :  key,
+                   colorStartAnimation: Colors.green,
+                   colorEndAnimation: Colors.red,
+                   animatedIconData: AnimatedIcons.add_event
+               ),
+         ),
+
 
      
     );
+    
   }
 }
         
+
+
