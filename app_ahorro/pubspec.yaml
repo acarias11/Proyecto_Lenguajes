@@ -19,6 +19,7 @@ dependencies:
   get: ^4.6.6
   sqflite: ^2.3.3+1
   animated_floating_buttons: ^0.0.1
+  email_validator: ^3.0.0
 
 
 
