@@ -64,8 +64,12 @@ class _HistorialPageState extends State<HistorialPage> {
                   itemCount: _ingreso.length,
                   itemBuilder: (context, index) {
                     final ingresos = _ingreso[index];
-                    return Card(
-                      color: Colors.green[ingresos.monto.truncate()],
+                    Color cardColor = ingresos.monto > 900
+                      ? Colors.green[900]!
+                      : (Colors.green[ingresos.monto.truncate() % 1000] ?? Colors.green); 
+
+                  return Card(
+                    color: cardColor,
                       margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                       elevation: 4,
                       shape: RoundedRectangleBorder(
@@ -87,9 +91,12 @@ class _HistorialPageState extends State<HistorialPage> {
                   itemCount: _gastos.length,
                   itemBuilder: (context, index) {
                     final gastos = _gastos[index];
+                     Color cardColor = gastos.monto > 900
+                      ? Colors.red[900]!
+                      : (Colors.red[gastos.monto.truncate() % 1000] ?? Colors.red); 
                     return SizedBox(
                       child: Card(
-                        color: Colors.red[gastos.monto.truncate()],
+                        color:cardColor,
                         margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                         elevation: 4,
                         shape: RoundedRectangleBorder(

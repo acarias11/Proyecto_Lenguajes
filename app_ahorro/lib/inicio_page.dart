@@ -1,7 +1,9 @@
 import 'package:app_ahorro/ahorro_page.dart';
 import 'package:app_ahorro/historial_page.dart';
+import 'package:app_ahorro/widgets/configuraciones_page.dart';
 import 'package:app_ahorro/widgets/graph.dart';
 import 'package:app_ahorro/home_page.dart';
+import 'package:app_ahorro/widgets/screens/agregar_ahorro_screen.dart';
 import 'package:app_ahorro/widgets/screens/agregar_gastos_screen.dart';
 import 'package:app_ahorro/widgets/screens/agregar_ingresos_screen.dart';
 import 'package:flutter/cupertino.dart';
@@ -56,6 +58,19 @@ Widget float2() {
       ),
     );
 }
+Widget float3() {
+    return Container(
+      child: FloatingActionButton(
+        backgroundColor: Colors.yellow,
+        onPressed: (){
+          Navigator.push(context,MaterialPageRoute(builder: (context) => AgregarAhorroPage()));
+        },
+        heroTag: "btn3",
+        tooltip: 'third button',
+        child:Text('Ahorros'),
+      ),
+    );
+}
     return Scaffold(
       body: PageView(
         physics: const NeverScrollableScrollPhysics(),
@@ -65,12 +80,12 @@ Widget float2() {
           setState(() {});
         },
         children:   [
-           HomePage(),
            HistorialPage(),
            AhorroPage(),
+           HomePage(),
            LineChartWidget(gradientColor1: AppColors.contentColorOrange, gradientColor2: AppColors.contentColorPink,
            gradientColor3: AppColors.contentColorPurple, indicatorStrokeColor: AppColors.contentColorYellow,),
-           
+           SettingsScreen(),           
         ],
       ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -84,24 +99,29 @@ Widget float2() {
           setState(() {});
         },
         items: const [
-          BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'home'
-              ),
-  
+          
           BottomNavigationBarItem(
             icon: Icon(FontAwesomeIcons.clockRotateLeft),
             label: 'historial',
             ),
-
-          BottomNavigationBarItem(
+            BottomNavigationBarItem(
             icon: Icon(FontAwesomeIcons.wallet),
-            label: 'Ahorro'
+            label: 'Ahorro',
             ),
-          BottomNavigationBarItem
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'home'
+              ),
+              BottomNavigationBarItem
           (icon: Icon(FontAwesomeIcons.chartPie),
           label: 'Grafico'
-          )
+          ),
+  
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Configuracion'
+            ),
+          
             
          ],
         ),
@@ -109,7 +129,7 @@ Widget float2() {
            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 70),
            child: AnimatedFloatingActionButton(
                    fabButtons: <Widget>[
-              float1(), float2()
+              float1(), float2(), float3()
                    ],
                    key :  key,
                    colorStartAnimation: Colors.green,

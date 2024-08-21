@@ -73,7 +73,7 @@ class PieChart2State extends State<PieChartSample2> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Indicator(
-                color: Colors.blue,
+                color: Colors.green,
                 text: 'Ingresos',
                 isSquare: true,
               ),
@@ -94,8 +94,6 @@ class PieChart2State extends State<PieChartSample2> {
 
   List<PieChartSectionData> showingSections() {
     final total = totalIngresos + totalGastos;
-
-    // Si el total es 0, evitamos divisiones por 0 y mostramos una sección "Sin datos"
     if (total == 0) {
       return [
         PieChartSectionData(
@@ -115,7 +113,7 @@ class PieChart2State extends State<PieChartSample2> {
 
     return [
       PieChartSectionData(
-        color: Colors.blue,
+        color: Colors.green,
         value: (totalIngresos > 0) ? totalIngresos / total * 100 : 0,
         title: (totalIngresos > 0)
             ? '${(totalIngresos / total * 100).toStringAsFixed(1)}%'

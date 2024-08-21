@@ -1,20 +1,10 @@
-
-import 'package:app_ahorro/Base%20De%20Datos/cuenta.dart';
-import 'package:app_ahorro/Base%20De%20Datos/data_controller.dart';
-//import 'package:app_ahorro/Base%20De%20Datos/ingreso.dart';
-import 'package:app_ahorro/Base%20De%20Datos/moneda.dart';
-import 'package:app_ahorro/Base%20De%20Datos/usuario.dart';
 import 'package:flutter/material.dart';
 import 'package:app_ahorro/Base%20De%20Datos/db_helper.dart';
-//import 'package:app_ahorro/Base De Datos/ingreso.dart';
-//import 'package:app_ahorro/Base De Datos/categoria.dart';
-//import 'package:app_ahorro/Base De Datos/usuario.dart';
-import 'package:get/get.dart';
-
-
+import 'Base De Datos/ahorro.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:liquid_progress_indicator_v2/liquid_progress_indicator.dart';
 
 class AhorroPage extends StatefulWidget {
-  
   const AhorroPage({super.key});
 
   @override
@@ -22,85 +12,112 @@ class AhorroPage extends StatefulWidget {
 }
 
 class _AhorroPageState extends State<AhorroPage> {
-  List<Usuario> _usuario =[];
-   List<Moneda> _monedas = [];
+  List<Ahorro> _ahorro = [];
+  double _totalAhorros = 0.0;
+  double _goal = 1000.0; // Valor predeterminado
 
   @override
   void initState() {
     super.initState();
-    _loadMoneda();
+    _loadAhorros();
+    _loadGoal();
   }
 
-  // Función para cargar usuarios desde la base de datos
-  Future<void> _loadMoneda() async {
+  Future<void> _loadAhorros() async {
     try {
-      final monedas = await DBHelper.queryMonedas(
-      );
+      final ahorro = await DBHelper.queryAhorro();
       setState(() {
-        _monedas = monedas;
+        _ahorro = ahorro;
+        _totalAhorros = _ahorro.fold(0.0, (sum, item) => sum + item.monto);
       });
     } catch (e) {
-      print('Error al cargar usuarios: $e');
+      print('Error al cargar Ahorros: $e');
     }
   }
-     Future<void> agregarCuenta() async {
-      final DataController dataController= Get.put(DataController());
-  
-       Cuenta c1 = Cuenta(
-        userid: 'u111',
-        nombre: 'aacc',
-        tipo: 'Cuenta Corriente',
-        moneda: 'Lempira',
-      );
-    
-       Cuenta c2 = Cuenta(
-        userid: 'u111',
-        nombre: 'darlangas',
-        tipo: 'Cuenta Corriente',
-        moneda: 'Dolares',
-      );
-      Cuenta c3 = Cuenta(
-        userid: 'u111',
-        nombre: 'Jeff',
-        tipo: 'Ahorro',
-        moneda: 'Euros',
-      );
-        try {
-      int mon1 = await dataController.addCuenta(c1);
-      int mon2 = await dataController.addCuenta(c2);
-      int mon3 = await dataController.addCuenta(c3);
-      print('Cuentas agregados con éxito. IDs: $mon1, $mon2, $mon3');
-         } catch (e) {
-          print('Error al agregar la cuenta: $e');
-             }
-      }
+
+  Future<void> _deleteAhorro(int id) async {
+    try {
+      await DBHelper.deleteAhorro(id);
+      setState(() {
+        _ahorro.removeWhere((ahorros) => ahorros.id == id);
+        _totalAhorros = _ahorro.fold(0.0, (sum, item) => sum + item.monto);
+      });
+    } catch (e) {
+      print('Error al eliminar Ahorros: $e');
+    }
+  }
+
+  Future<void> _loadGoal() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _goal = prefs.getDouble('goal') ?? 1000.0;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    double progress = (_goal > 0) ? (_totalAhorros / _goal) : 0.0;
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Página de Inicio'),
-      ),
-      body: Column(
-        children: [
-          ElevatedButton(
-            onPressed: agregarCuenta,
-            child: Text('Agregar Monedas'),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(50.0),
+          child: Column(
+            children: [
+              Text('Progreso',style: TextStyle(fontSize: 40)),
+              LiquidCustomProgressIndicator(
+                value: progress,
+                valueColor: AlwaysStoppedAnimation(Colors.yellow),
+                backgroundColor: Colors.grey[300],
+                direction: Axis.vertical,
+                shapePath: _buildShapePath(),
+                center: Text('Meta', style: TextStyle(fontSize: 30),),
+              ),
+              const SizedBox(height: 10),
+              // Lista de ahorros
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: _ahorro.length,
+                itemBuilder: (context, index) {
+                  final ahorros = _ahorro[index];
+                  Color cardColor = ahorros.monto > 900
+                      ? Colors.yellow[900]!
+                      : (Colors.yellow[ahorros.monto.truncate() % 1000] ?? Colors.yellow); 
+
+                  return Card(
+                    color: cardColor,
+                    margin: const EdgeInsets.symmetric(vertical: 8.0),
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.all(10.0),
+                      title: Text(
+                        'Ahorros: ${ahorros.descripcion} \t${ahorros.monto}',
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      trailing: IconButton(
+                        icon: const Icon(Icons.delete, color: Colors.red),
+                        onPressed: () => _deleteAhorro(ahorros.id!),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ],
           ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: _monedas.length,
-              itemBuilder: (context, index) {
-                final monedas = _monedas[index];
-                return ListTile(
-                  title: Text(monedas.nombre),
-                  subtitle: Text(monedas.simbolo),
-            );
-            },
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
+  Path _buildShapePath() {
+    final path = Path();
+    path.lineTo(0, 200); 
+    path.lineTo(200, 200); 
+    path.lineTo(200, 0); 
+    return path;
+  }
 }
+

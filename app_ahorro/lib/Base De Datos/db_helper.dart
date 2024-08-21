@@ -3,6 +3,7 @@ import 'package:app_ahorro/Base%20De%20Datos/gasto.dart';
 import 'package:app_ahorro/Base%20De%20Datos/ingreso.dart';
 import 'package:app_ahorro/Base%20De%20Datos/moneda.dart';
 import 'package:app_ahorro/Base%20De%20Datos/usuario.dart';
+import 'package:app_ahorro/Base%20De%20Datos/ahorro.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -14,6 +15,7 @@ class DBHelper {
   static final String _ingresosTable = "ingresos";
   static final String _gastosTable = "gastos";
   static final String _usuariosTable = "usuarios";
+  static final String _ahorroTable = "ahorro";
 
   // Inicializar la base de datos
   static Future<void> initDB() async {
@@ -68,6 +70,16 @@ class DBHelper {
             "nombre TEXT,"
             "email TEXT,"
             "contrasena TEXT"
+            ")",
+          );
+          db.execute(
+            "CREATE TABLE $_ahorroTable ("
+            "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+            "monto REAL,"
+            "fecha TEXT,"
+            "cuentaId INTEGER,"
+            "descripcion TEXT,"
+            "FOREIGN KEY (cuentaId) REFERENCES $_cuentasTable (id)"
             ")",
           );
         },
@@ -208,6 +220,33 @@ class DBHelper {
       usuario.toJson(),
       where: 'id = ?',
       whereArgs: [usuario.id],
+    );
+  }
+
+  // Métodos para Ahorro
+  static Future<int> insertAhorro(Ahorro? ahorro) async {
+    if (_db == null) throw Exception('Database not initialized');
+    return await _db!.insert(_ahorroTable, ahorro!.toJson());
+  }
+
+  static Future<List<Ahorro>> queryAhorro() async {
+    if (_db == null) throw Exception('Database not initialized');
+    final List<Map<String, dynamic>> maps = await _db!.query(_ahorroTable);
+    return List.generate(maps.length, (i) => Ahorro.fromJson(maps[i]));
+  }
+
+  static Future<int> deleteAhorro(int id) async {
+    if (_db == null) throw Exception('Database not initialized');
+    return await _db!.delete(_ahorroTable, where: 'id = ?', whereArgs: [id]);
+  }
+
+  static Future<int> updateAhorro(Ahorro ahorro) async {
+    if (_db == null) throw Exception('Database not initialized');
+    return await _db!.update(
+      _ahorroTable,
+      ahorro.toJson(),
+      where: 'id = ?',
+      whereArgs: [ahorro.id],
     );
   }
 }

@@ -7,7 +7,6 @@ import 'package:app_ahorro/login_page.dart';
 import 'package:app_ahorro/registro_page.dart';
 import 'package:app_ahorro/widgets/screens/select_currency_screen.dart';
 import 'package:app_ahorro/widgets/screens/set_account_details_screen.dart';
-import 'package:app_ahorro/widgets/screens/welcome_screen_page.dart';
 import 'package:flutter/material.dart';
 
 void main() async {
@@ -29,7 +28,7 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
-        '/': (context) => const WelcomeScreenPage(),
+        '/': (context) => const InicioPage(),
         '/login':(context)=>const LoginPage(),
         '/signUp': (context) => const RegistroPage(),
         // '/select_currency_screen': (context) => const SelectCurrencyScreen(),
