@@ -20,7 +20,9 @@ dependencies:
   sqflite: ^2.3.3+1
   animated_floating_buttons: ^0.0.1
   email_validator: ^3.0.0
-
+  water_bottle: ^0.0.7
+  liquid_progress_indicator_v2: ^0.5.0
+  shared_preferences: ^2.0.11
 
 
 
