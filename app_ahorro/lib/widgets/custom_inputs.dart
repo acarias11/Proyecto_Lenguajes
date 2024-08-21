@@ -22,7 +22,7 @@ class CustomInputs extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controller,
-      validator: validator,
+      validator: null,
       keyboardType: teclado,
       maxLines: 1,
       decoration: InputDecoration(

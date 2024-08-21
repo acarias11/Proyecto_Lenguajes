@@ -16,21 +16,33 @@ class _SetAccountDetailsScreenState extends State<SetAccountDetailsScreen> {
   final _formKey = GlobalKey<FormState>();
   String _tipoCuenta = '';
   String _nombreCuenta = '';
+  String? _moneda;
 
   Future<void> agregarUsuarios() async {
-    final DataController dataController = Get.put(DataController());
-    final String moneda = ModalRoute.of(context)!.settings.arguments as String;
-    final userid = Usuario.fromJson(dataController as Map<String, dynamic>).userId;
+    final DataController dataController = Get.find<DataController>(); // Obtener el DataController usando GetX
+    final Usuario? usuarioActual = await dataController.getCurrentUser();
 
+    if (usuarioActual == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('No se encontró el usuario actual')));
+      return;
+    }
+
+    // Crear una nueva cuenta con los detalles ingresados
     Cuenta nuevaCuenta = Cuenta(
         nombre: _nombreCuenta,
-        userid: userid,
+        userid: usuarioActual.userId, 
         tipo: _tipoCuenta,
-        moneda: moneda);
+        moneda: _moneda ?? '');
 
+    // Agregar la cuenta al controlador y manejar el resultado
     dataController.addCuenta(nuevaCuenta).then((result) {
       ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Cuenta creada con exito!')));
+          const SnackBar(content: Text('Cuenta creada con éxito!')));
+      Navigator.of(context).pushNamed(
+        '/select_currency_screen',
+        arguments: _moneda,
+      );
     }).catchError((e) {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(e.toString())));
@@ -64,6 +76,7 @@ class _SetAccountDetailsScreenState extends State<SetAccountDetailsScreen> {
                   return null;
                 },
               ),
+              const SizedBox(height: 16),
               TextFormField(
                 decoration: const InputDecoration(labelText: 'Account Name'),
                 onSaved: (value) {
@@ -76,14 +89,35 @@ class _SetAccountDetailsScreenState extends State<SetAccountDetailsScreen> {
                   return null;
                 },
               ),
+              const SizedBox(height: 16),
+              DropdownButtonFormField<String>(
+                decoration: const InputDecoration(labelText: 'Currency'),
+                items: const [
+                  DropdownMenuItem(value: 'Lempira', child: Text('Lempira')),
+                  DropdownMenuItem(value: 'Euro', child: Text('Euro')),
+                  DropdownMenuItem(value: 'Dólar', child: Text('Dólar')),
+                ],
+                onChanged: (value) {
+                  setState(() {
+                    _moneda = value;
+                  });
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please select a currency';
+                  }
+                  return null;
+                },
+              ),
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
-                  if (_formKey.currentState!.validate()) return;
-                  agregarUsuarios();
-                  Navigator.of(context).popAndPushNamed('/SelectCurrencyScreen');
+                  if (_formKey.currentState!.validate()) {
+                    _formKey.currentState!.save();
+                    agregarUsuarios();
+                  }
                 },
-                child: const Text('Registrar cuenta'),
+                child: const Text('Register Account'),
               ),
             ],
           ),
@@ -92,4 +126,3 @@ class _SetAccountDetailsScreenState extends State<SetAccountDetailsScreen> {
     );
   }
 }
-

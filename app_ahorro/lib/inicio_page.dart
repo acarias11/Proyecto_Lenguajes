@@ -64,7 +64,7 @@ Widget float2() {
           currentIndex+index;
           setState(() {});
         },
-        children:  const [
+        children:   [
            HomePage(),
            HistorialPage(),
            AhorroPage(),
@@ -73,7 +73,7 @@ Widget float2() {
            
         ],
       ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked, // Centrar el FAB
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar:BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         backgroundColor: CupertinoColors.activeGreen,
@@ -114,7 +114,7 @@ Widget float2() {
                    key :  key,
                    colorStartAnimation: Colors.green,
                    colorEndAnimation: Colors.red,
-                   animatedIconData: AnimatedIcons.add_event
+                   animatedIconData: AnimatedIcons.menu_close
                ),
          ),
 

@@ -1,10 +1,15 @@
-import 'package:app_ahorro/Base%20De%20Datos/ingreso.dart';
+
+import 'package:app_ahorro/Base%20De%20Datos/cuenta.dart';
+import 'package:app_ahorro/Base%20De%20Datos/data_controller.dart';
+//import 'package:app_ahorro/Base%20De%20Datos/ingreso.dart';
 import 'package:app_ahorro/Base%20De%20Datos/moneda.dart';
-import 'package:app_ahorro/Base De Datos/gasto.dart';
+import 'package:app_ahorro/Base%20De%20Datos/usuario.dart';
 import 'package:flutter/material.dart';
 import 'package:app_ahorro/Base%20De%20Datos/db_helper.dart';
-import 'package:app_ahorro/Base De Datos/cuenta.dart';
-import 'package:app_ahorro/Base De Datos/usuario.dart';
+//import 'package:app_ahorro/Base De Datos/ingreso.dart';
+//import 'package:app_ahorro/Base De Datos/categoria.dart';
+//import 'package:app_ahorro/Base De Datos/usuario.dart';
+import 'package:get/get.dart';
 
 
 
@@ -17,78 +22,58 @@ class AhorroPage extends StatefulWidget {
 }
 
 class _AhorroPageState extends State<AhorroPage> {
-   List<Ingreso> _ingreso = [];
-   List<Usuario> _usuario=[];
-   List<Moneda> _moneda=[];
-   List<Gasto> _gastos=[];
-   List<Cuenta> _cuentas=[];
-
+  List<Usuario> _usuario =[];
+   List<Moneda> _monedas = [];
 
   @override
   void initState() {
     super.initState();
-    _loadIngreso();
-    _loadUsuarios();
     _loadMoneda();
-    _loadGastos();
-    _loadCuenta();
   }
-  
-  Future<void> _loadIngreso() async {
-    try {
-      final ingreso = await DBHelper.queryIngresos(
-      );
-      setState(() {
-        _ingreso = ingreso;
-      });
-    } catch (e) {
-      print('Error al cargar usuarios: $e');
-    }
-  }
-  Future<void> _loadUsuarios() async {
-    try {
-      final usuarios = await DBHelper.queryUsuarios(
-      );
-      setState(() {
-        _usuario = usuarios;
-      });
-    } catch (e) {
-      print('Error al cargar usuarios: $e');
-    }
-  }
+
+  // Función para cargar usuarios desde la base de datos
   Future<void> _loadMoneda() async {
     try {
-      final moneda = await DBHelper.queryMonedas(
+      final monedas = await DBHelper.queryMonedas(
       );
       setState(() {
-        _moneda = moneda;
+        _monedas = monedas;
       });
     } catch (e) {
       print('Error al cargar usuarios: $e');
     }
   }
-   Future<void> _loadGastos() async {
-    try {
-      final gastos = await DBHelper.queryGastos(
+     Future<void> agregarCuenta() async {
+      final DataController dataController= Get.put(DataController());
+  
+       Cuenta c1 = Cuenta(
+        userid: 'u111',
+        nombre: 'aacc',
+        tipo: 'Cuenta Corriente',
+        moneda: 'Lempira',
       );
-      setState(() {
-        _gastos = gastos;
-      });
-    } catch (e) {
-      print('Error al cargar usuarios: $e');
-    }
-  }
-  Future<void> _loadCuenta() async {
-    try {
-      final cuentas = await DBHelper.queryCuentas(
+    
+       Cuenta c2 = Cuenta(
+        userid: 'u111',
+        nombre: 'darlangas',
+        tipo: 'Cuenta Corriente',
+        moneda: 'Dolares',
       );
-      setState(() {
-        _cuentas = cuentas;
-      });
-    } catch (e) {
-      print('Error al cargar usuarios: $e');
-    }
-  }
+      Cuenta c3 = Cuenta(
+        userid: 'u111',
+        nombre: 'Jeff',
+        tipo: 'Ahorro',
+        moneda: 'Euros',
+      );
+        try {
+      int mon1 = await dataController.addCuenta(c1);
+      int mon2 = await dataController.addCuenta(c2);
+      int mon3 = await dataController.addCuenta(c3);
+      print('Cuentas agregados con éxito. IDs: $mon1, $mon2, $mon3');
+         } catch (e) {
+          print('Error al agregar la cuenta: $e');
+             }
+      }
 
   @override
   Widget build(BuildContext context) {
@@ -96,80 +81,25 @@ class _AhorroPageState extends State<AhorroPage> {
       appBar: AppBar(
         title: Text('Página de Inicio'),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            SizedBox(
-              height: 100,
-              width: 300,
-              child: ListView.builder(
-                itemCount: _usuario.length,
-                itemBuilder: (context, index) {
-                  final usuario = _usuario[index];
-                  return ListTile(
-                    title: Text('${usuario.id}, ${usuario.userId},${usuario.email}, ${usuario.nombre},  ${usuario.contrasena}'),
-              );
-              }
-              ),
+      body: Column(
+        children: [
+          ElevatedButton(
+            onPressed: agregarCuenta,
+            child: Text('Agregar Monedas'),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: _monedas.length,
+              itemBuilder: (context, index) {
+                final monedas = _monedas[index];
+                return ListTile(
+                  title: Text(monedas.nombre),
+                  subtitle: Text(monedas.simbolo),
+            );
+            },
             ),
-              SizedBox(
-                height: 100,
-              width: 300,
-              child: ListView.builder(
-                itemCount: _cuentas.length,
-                itemBuilder: (context, index) {
-                  final cuentas = _cuentas[index];
-                  return ListTile(
-                    title: Text('${cuentas.id}, ${cuentas.moneda},${cuentas.nombre} '),
-              );
-              }
-              ),
-            ),
-            
-            SizedBox(
-              height: 100,
-              width: 300,
-              child: ListView.builder(
-                itemCount: _moneda.length,
-                itemBuilder: (context, index) {
-                  final moneda = _moneda[index];
-                  return ListTile(
-                    title: Text('${moneda.id}, ${moneda.nombre},${moneda.simbolo}'),
-              );
-              },
-              
-              ),
-            ),
-             SizedBox(
-              height: 100,
-              width: 300,
-              child: ListView.builder(
-                itemCount: _ingreso.length,
-                itemBuilder: (context, index) {
-                  final ingresos = _ingreso[index];
-                  return ListTile(
-                    title: Text('Ingreso: ${ingresos.descripcion}'),
-                    subtitle: Text('${ingresos.monto} - ${ingresos.fecha}'),
-              );
-              },
-              ),
-            ),
-             SizedBox(
-              height: 100,
-              width: 300,
-              child: ListView.builder(
-                itemCount: _gastos.length,
-                itemBuilder: (context, index) {
-                  final gastos = _gastos[index];
-                  return ListTile(
-                    title: Text('${gastos.id}, ${gastos.monto},${gastos.descripcion}, ${gastos.fecha}'),
-              );
-              },
-              
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

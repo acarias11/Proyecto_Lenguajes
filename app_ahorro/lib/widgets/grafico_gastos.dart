@@ -2,13 +2,13 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:app_ahorro/Base%20De%20Datos/db_helper.dart';
 import 'package:flutter/material.dart';
 
-class LineChartWidget extends StatefulWidget {
+class LineChartGastosWidget extends StatefulWidget {
   final Color gradientColor1;
   final Color gradientColor2;
   final Color gradientColor3;
   final Color indicatorStrokeColor;
 
-  const LineChartWidget({
+  const LineChartGastosWidget({
     Key? key,
     required this.gradientColor1,
     required this.gradientColor2,
@@ -17,10 +17,10 @@ class LineChartWidget extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _LineChartWidgetState createState() => _LineChartWidgetState();
+  _LineChartGastosWidgetState createState() => _LineChartGastosWidgetState();
 }
 
-class _LineChartWidgetState extends State<LineChartWidget> {
+class _LineChartGastosWidgetState extends State<LineChartGastosWidget> {
   List<int> showingTooltipOnSpots = [];
   List<FlSpot> allSpots = [];
 
@@ -31,12 +31,12 @@ class _LineChartWidgetState extends State<LineChartWidget> {
   }
 
   Future<void> syncData() async {
-    final ingresos = await DBHelper.queryIngresos();
+    final gastos = await DBHelper.queryGastos();
     setState(() {
-      allSpots = ingresos.asMap().entries.map((entry) {
+      allSpots = gastos.asMap().entries.map((entry) {
         final index = entry.key.toDouble();
-        final ingreso = entry.value.monto;
-        return FlSpot(index, ingreso);
+        final gasto = entry.value.monto;
+        return FlSpot(index, gasto);
       }).toList();
     });
   }
@@ -181,7 +181,7 @@ class _LineChartWidgetState extends State<LineChartWidget> {
                   ),
                   topTitles: const AxisTitles(
                     axisNameWidget: Text(
-                      'Ingresos',style: TextStyle(fontSize: 20),
+                      'Gastos',style: TextStyle(fontSize: 20),
                       textAlign: TextAlign.left,
                     ),
                     axisNameSize: 24,

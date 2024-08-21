@@ -23,6 +23,22 @@ class DataController extends GetxController {
   var gastoList = <Gasto>[].obs;
   var usuarioList = <Usuario>[].obs;
 
+  // ID del usuario actual
+  String? _currentUserId;
+
+  // Método para establecer el ID del usuario actual
+  void setCurrentUserId(String userId) {
+    _currentUserId = userId;
+  }
+
+  // Método para obtener el usuario actual
+  Future<Usuario?> getCurrentUser() async {
+    if (_currentUserId == null) return null;
+
+    final usuarios = usuarioList.where((user) => user.userId == _currentUserId).toList();
+    return usuarios.isNotEmpty ? usuarios.first : null;
+  }
+
   // Métodos para Cuentas
   Future<int> addCuenta(Cuenta cuenta) async {
     int result = await DBHelper.insertCuenta(cuenta);
