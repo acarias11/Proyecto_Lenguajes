@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
         '/select_currency_screen': (context) => const SelectCurrencyScreen(),
         '/select_account_details': (context) => SetAccountDetailsScreen(),
         '/inicio':(context)=>InicioPage(),
-        'home': (context) => const HomePage(),
+        'home': (context) =>  HomePage(),
         'historial': (context) => const HistorialPage()
       },
     );
