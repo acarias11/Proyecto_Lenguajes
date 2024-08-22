@@ -56,7 +56,7 @@ class _PrimerIngresoScreenState extends State<PrimerIngresoScreen> {
 
     try {
       await DBHelper.insertIngreso(ingreso);
-      Navigator.pop(context);  
+      Navigator.of(context).pushReplacementNamed('/inicio'); 
     } catch (e) {
       print('Error al agregar ingreso: $e');
       ScaffoldMessenger.of(context).showSnackBar(
@@ -124,7 +124,7 @@ class _PrimerIngresoScreenState extends State<PrimerIngresoScreen> {
                     nombrelabel:  'Monto',
                     hint: 'Ingrese el monto',
                     icono: Icons.money_rounded,
-                    show: true
+                    show: false
                   ),
                   CustomInputs(
                     controller: _descripcionController,
@@ -132,7 +132,7 @@ class _PrimerIngresoScreenState extends State<PrimerIngresoScreen> {
                     nombrelabel: 'Descripción',
                     teclado: TextInputType.text,
                     hint: 'Ingrese cual fue el ingreso',
-                    icono: FontAwesomeIcons.pen, show: true,
+                    icono: FontAwesomeIcons.pen, show: false,
                   ),
                   DropdownButton<Cuenta>(
                     hint: const Text('Selecciona una cuenta'),

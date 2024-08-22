@@ -13,6 +13,7 @@ class LiquidBottlePage extends StatefulWidget {
 
 class _LiquidBottlePageState extends State<LiquidBottlePage> {
   int selectedStyle = 0;
+  // ignore: unused_field
   late double _currentWaterLevel;
 
   @override

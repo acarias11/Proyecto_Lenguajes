@@ -238,17 +238,33 @@ class DBHelper {
 
   static Future<Usuario?> getUsuarioByUserId(String userId) async {
     final List<Map<String, dynamic>> result = await _db!.query(
-        _usuariosTable,
-        where: 'userID = ?',
-        whereArgs: [userId],
+      _usuariosTable,
+      where: 'userID = ?',
+      whereArgs: [userId],
     );
     if (result.isNotEmpty) {
-        return Usuario.fromJson(result.first);
+      return Usuario.fromJson(result.first);
     } else {
-        return null; // Usuario no encontrado
+      return null; // Usuario no encontrado
     }
-}
+  }
 
+  static Future<void> saveUserId(String userId) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('userID', userId);
+  }
+
+// Método para obtener el userId de SharedPreferences
+  static Future<String?> getUserId() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('userID');
+  }
+
+// Método para eliminar el userId de SharedPreferences (logout)
+  static Future<void> clearUserId() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('userID');
+  }
 
   static Future<String?> getUserIdFromSharedPreferences() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();

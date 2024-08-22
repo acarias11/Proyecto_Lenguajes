@@ -1,3 +1,4 @@
+import 'package:app_ahorro/Base%20De%20Datos/db_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -56,6 +57,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
       prefs.setString('currency', newCurrency);
     });
   }
+
+  void logout() async {
+  await DBHelper.clearUserId();
+  Navigator.of(context).pushReplacementNamed('/login'); // Redirige a la pantalla de login
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -116,7 +123,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text('Logged out')),
               );
-              Navigator.of(context).pop('/');
+              logout();
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.red,

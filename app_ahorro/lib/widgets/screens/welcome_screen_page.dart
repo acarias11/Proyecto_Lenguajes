@@ -44,8 +44,7 @@ class WelcomeScreenPage extends StatelessWidget {
             const SizedBox(height: 30,),
             GestureDetector(
               onTap: (){
-                Navigator.push(context,
-                 MaterialPageRoute(builder: (context) => const LoginPage()));
+                Navigator.of(context).pushNamed('/login');
               },
               child: Container(
                 height: 53,
@@ -64,8 +63,7 @@ class WelcomeScreenPage extends StatelessWidget {
              const SizedBox(height: 30,),
              GestureDetector(
                onTap: (){
-                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => const RegistroPage()));
+                 Navigator.of(context).pushNamed('/signUp');
                },
                child: Container(
                  height: 53,

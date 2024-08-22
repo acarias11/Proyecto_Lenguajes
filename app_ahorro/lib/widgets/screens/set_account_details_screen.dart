@@ -8,8 +8,7 @@ class SetAccountDetailsScreen extends StatefulWidget {
   final usuario;
 
   @override
-  State<SetAccountDetailsScreen> createState() =>
-      _SetAccountDetailsScreenState();
+  State<SetAccountDetailsScreen> createState() => _SetAccountDetailsScreenState();
 }
 
 class _SetAccountDetailsScreenState extends State<SetAccountDetailsScreen> {
@@ -40,7 +39,7 @@ class _SetAccountDetailsScreenState extends State<SetAccountDetailsScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Cuenta creada con éxito!')),
           );
-          Navigator.of(context).pushReplacementNamed('/inicio');
+          Navigator.of(context).pushReplacementNamed('/monto');
         }).catchError((e) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(e.toString())),
@@ -133,3 +132,4 @@ class _SetAccountDetailsScreenState extends State<SetAccountDetailsScreen> {
     );
   }
 }
+

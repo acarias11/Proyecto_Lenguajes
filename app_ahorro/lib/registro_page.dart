@@ -22,7 +22,7 @@ class _RegistroPageState extends State<RegistroPage> {
   final GlobalKey<FormState> formkey = GlobalKey<FormState>();
   final DataController dataController = Get.put(DataController());
 
-  Future<void> registrarUsuario() async {
+  Future<void> registrarUsuario(BuildContext context) async {
     try {
       // Validar si el correo ya está registrado
       final List<Usuario> users = await DBHelper.queryUsuarios();
@@ -49,6 +49,8 @@ class _RegistroPageState extends State<RegistroPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Usuario creado con éxito!')),
       );
+
+      await DBHelper.saveUserId(registrarUsuario.userId);
 
       // Redirigir al login después de registrar el usuario
       Navigator.of(context).pushReplacementNamed('/login');
@@ -212,7 +214,7 @@ class _RegistroPageState extends State<RegistroPage> {
                           child: OutlinedButton(
                             onPressed: () {
                               if (!formkey.currentState!.validate()) return;
-                              registrarUsuario();
+                              registrarUsuario(context);
                             },
                             child: const Text(
                               'Registrarse',
