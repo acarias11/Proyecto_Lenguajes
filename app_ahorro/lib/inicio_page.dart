@@ -1,6 +1,7 @@
 import 'package:app_ahorro/ahorro_page.dart';
 import 'package:app_ahorro/historial_page.dart';
 import 'package:app_ahorro/widgets/configuraciones_page.dart';
+import 'package:app_ahorro/widgets/graficos_page.dart';
 import 'package:app_ahorro/widgets/graph.dart';
 import 'package:app_ahorro/home_page.dart';
 import 'package:app_ahorro/widgets/screens/agregar_ahorro_screen.dart';
@@ -83,8 +84,7 @@ Widget float3() {
            HistorialPage(),
            AhorroPage(),
            HomePage(),
-           LineChartWidget(gradientColor1: AppColors.contentColorOrange, gradientColor2: AppColors.contentColorPink,
-           gradientColor3: AppColors.contentColorPurple, indicatorStrokeColor: AppColors.contentColorYellow,),
+           UnidosGraficosPage(),
            SettingsScreen(),           
         ],
       ),

@@ -1,21 +1,23 @@
 import 'package:app_ahorro/widgets/grafico_circular.dart';
 import 'package:flutter/material.dart';
 import 'package:app_ahorro/Base%20De%20Datos/db_helper.dart';
-import 'package:app_ahorro/Base De Datos/ingreso.dart';
+import 'package:app_ahorro/Base%20De%20Datos/ingreso.dart';
 import 'Base De Datos/gasto.dart';
 import 'package:app_ahorro/widgets/graph.dart';
 import 'widgets/grafico_gastos.dart';
-class HomePage extends StatefulWidget {
-   HomePage({super.key});
+import 'package:shared_preferences/shared_preferences.dart';
 
+class HomePage extends StatefulWidget {
+  HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  List<Ingreso> _ingreso = [];
+  String _selectedCurrency = '';
 
+  List<Ingreso> _ingreso = [];
   List<Gasto> _gastos = [];
 
   @override
@@ -23,13 +25,21 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     _loadIngreso();
     _loadGastos();
+    _loadSelectedCurrency();
+  }
+
+  Future<void> _loadSelectedCurrency() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _selectedCurrency = prefs.getString('currency') ?? '';
+    });
   }
 
   Future<void> _loadIngreso() async {
     try {
-      final ingreso = await DBHelper.queryIngresos();
+      final ingresos = await DBHelper.queryIngresos();
       setState(() {
-        _ingreso = ingreso;
+        _ingreso = ingresos;
       });
     } catch (e) {
       print('Error al cargar ingresos: $e');
@@ -62,10 +72,10 @@ class _HomePageState extends State<HomePage> {
     try {
       await DBHelper.deleteGasto(id);
       setState(() {
-        _gastos.removeWhere((gastos) => gastos.id == id);
+        _gastos.removeWhere((gasto) => gasto.id == id);
       });
     } catch (e) {
-      print('Error al eliminar gastos: $e');
+      print('Error al eliminar gasto: $e');
     }
   }
 
@@ -77,47 +87,49 @@ class _HomePageState extends State<HomePage> {
           padding: const EdgeInsets.all(40.0),
           child: Column(
             children: [
-             const SizedBox(height: 50.0),
-           const SingleChildScrollView(
+              const SizedBox(height: 50.0),
+              const SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
-                child:  Row(
+                child: Row(
                   children: [
-                     SizedBox(
+                    SizedBox(
                       height: 250,
                       width: 400,
-                      child:PieChartSample2()
+                      child: PieChartSample2(),
                     ),
-                     SizedBox(
+                    SizedBox(
                       height: 200,
-                      width: 350,                      child: LineChartWidget(
+                      width: 350,
+                      child: LineChartWidget(
                         gradientColor1: Color.fromARGB(255, 26, 171, 13),
                         gradientColor2: Color.fromARGB(255, 105, 168, 110),
                         gradientColor3: Color.fromARGB(255, 57, 103, 52),
                         indicatorStrokeColor: Color.fromARGB(255, 0, 0, 0),
                       ),
                     ),
-                     SizedBox(
+                    SizedBox(
                       height: 200,
-                      width: 300,  
-                     child: LineChartGastosWidget(gradientColor1: Color.fromARGB(255, 212, 5, 5),
+                      width: 300,
+                      child: LineChartGastosWidget(
+                        gradientColor1: Color.fromARGB(255, 212, 5, 5),
                         gradientColor2: Color.fromARGB(255, 218, 107, 79),
                         gradientColor3: Color.fromARGB(255, 240, 143, 16),
-                        indicatorStrokeColor: Color.fromARGB(255, 0, 0, 0),)
-                     ),
+                        indicatorStrokeColor: Color.fromARGB(255, 0, 0, 0),
+                      ),
+                    ),
                   ],
                 ),
               ),
-
               // Lista de ingresos
               ListView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: _ingreso.length,
                 itemBuilder: (context, index) {
-                  final ingresos = _ingreso[index];
-                  Color cardColor = ingresos.monto > 900
+                  final ingreso = _ingreso[index];
+                  Color cardColor = ingreso.monto > 900
                       ? Colors.green[900]!
-                      : (Colors.green[ingresos.monto.truncate() % 1000] ?? Colors.green); 
+                      : (Colors.green[ingreso.monto.truncate() % 1000] ?? Colors.green);
 
                   return Card(
                     color: cardColor,
@@ -129,27 +141,28 @@ class _HomePageState extends State<HomePage> {
                     child: ListTile(
                       contentPadding: const EdgeInsets.all(10.0),
                       title: Text(
-                        'Ingreso: ${ingresos.descripcion} \t${ingresos.monto}',
+                        'Ingreso: ${ingreso.descripcion} \t$_selectedCurrency${ingreso.monto}',
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                       trailing: IconButton(
                         icon: const Icon(Icons.delete, color: Colors.red),
-                        onPressed: () => _deleteIngreso(ingresos.id!),
+                        onPressed: () => _deleteIngreso(ingreso.id!),
                       ),
                     ),
                   );
                 },
               ),
-
+              // Lista de gastos
               ListView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: _gastos.length,
                 itemBuilder: (context, index) {
-                  final gastos = _gastos[index];
-                  Color cardColor = gastos.monto > 900
+                  final gasto = _gastos[index];
+                  Color cardColor = gasto.monto > 900
                       ? Colors.red[900]!
-                      : (Colors.red[gastos.monto.truncate() % 1000] ?? Colors.red); 
+                      : (Colors.red[gasto.monto.truncate() % 1000] ?? Colors.red);
+
                   return Card(
                     color: cardColor,
                     margin: const EdgeInsets.symmetric(vertical: 8.0),
@@ -160,12 +173,12 @@ class _HomePageState extends State<HomePage> {
                     child: ListTile(
                       contentPadding: const EdgeInsets.all(10.0),
                       title: Text(
-                        'Gasto: ${gastos.descripcion} \t${gastos.monto}',
+                        'Gasto: ${gasto.descripcion} \t$_selectedCurrency${gasto.monto}',
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                       trailing: IconButton(
                         icon: const Icon(Icons.delete, color: Colors.green),
-                        onPressed: () => _deleteGastos(gastos.id!),
+                        onPressed: () => _deleteGastos(gasto.id!),
                       ),
                     ),
                   );

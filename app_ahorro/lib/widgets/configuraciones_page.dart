@@ -11,11 +11,19 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   final TextEditingController _goalController = TextEditingController();
   double _goal = 1000.0;
+  String? _selectedCurrency;
+  final List<String> _currencySymbols = ['L', '\$', '€']; // Simbolos de moneda
+  final Map<String, String> _currencyNames = {
+    'L': 'Lempira',
+    '\$': 'Dólar',
+    '€': 'Euro',
+  };
 
   @override
   void initState() {
     super.initState();
     _loadGoal();
+    _loadCurrency();
   }
 
   Future<void> _loadGoal() async {
@@ -31,6 +39,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
     setState(() {
       _goal = double.tryParse(_goalController.text) ?? _goal;
       prefs.setDouble('goal', _goal);
+    });
+  }
+
+  Future<void> _loadCurrency() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _selectedCurrency = prefs.getString('currency') ?? _currencySymbols.first;
+    });
+  }
+
+  Future<void> _changeCurrency(String newCurrency) async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _selectedCurrency = newCurrency;
+      prefs.setString('currency', newCurrency);
     });
   }
 
@@ -61,44 +84,47 @@ class _SettingsScreenState extends State<SettingsScreen> {
             child: const Text('Guardar Meta'),
           ),
           const SizedBox(height: 20),
+          
+          // Cambiar Moneda
           ListTile(
             title: const Text('Cambiar Moneda'),
             leading: const Icon(Icons.monetization_on),
-            onTap: () {
-              // Navegar a cambiar moneda
-            },
+            subtitle: _selectedCurrency != null 
+              ? Text('Moneda actual: ${_currencyNames[_selectedCurrency!]}') 
+              : const Text('Cargando...'),
+            trailing: DropdownButton<String>(
+              value: _selectedCurrency,
+              items: _currencySymbols.map((String symbol) {
+                return DropdownMenuItem<String>(
+                  value: symbol,
+                  child: Text(_currencyNames[symbol]!),
+                );
+              }).toList(),
+              onChanged: (String? newValue) {
+                if (newValue != null) {
+                  _changeCurrency(newValue);
+                }
+              },
+            ),
           ),
-          ListTile(
-            title: const Text('Cambiar tipo de cuenta'),
-            leading: const Icon(Icons.category),
-            onTap: () {
-              // Navegar a cambiar tipo de cuenta
-            },
-          ),
-          ListTile(
-            title: const Text('Borrar ingreso'),
-            leading: const Icon(Icons.remove_circle_outline),
-            onTap: () {
-              // Navegar a borrar ingreso
-            },
-          ),
-          ListTile(
-            title: const Text('Borrar Gasto'),
-            leading: const Icon(Icons.remove_circle),
-            onTap: () {
-              // Navegar a borrar gasto
-            },
-          ),
+          
           const SizedBox(height: 20),
+          
+          // Log Out
           ElevatedButton(
             onPressed: () {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text('Logged out')),
               );
-              Navigator.of(context).pop('/login');
+              Navigator.of(context).pop('/');
             },
-            child: const Text('Log Out', style: TextStyle(fontSize: 20, color: Colors.black),),
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+            ),
+            child: const Text(
+              'Log Out',
+              style: TextStyle(fontSize: 20, color: Colors.black),
+            ),
           ),
         ],
       ),
