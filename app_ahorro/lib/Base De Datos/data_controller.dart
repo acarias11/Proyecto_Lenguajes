@@ -35,7 +35,8 @@ class DataController extends GetxController {
   Future<Usuario?> getCurrentUser() async {
     if (_currentUserId == null) return null;
 
-    final usuarios = usuarioList.where((user) => user.userId == _currentUserId).toList();
+    final usuarios =
+        usuarioList.where((user) => user.userId == _currentUserId).toList();
     return usuarios.isNotEmpty ? usuarios.first : null;
   }
 
@@ -57,11 +58,14 @@ class DataController extends GetxController {
   }
 
   Future<void> updateCuenta(Cuenta cuenta) async {
-     if (cuenta.isDataComplete == true) {
-    cuenta.cuentaCompleta = true;
-  }
-    await DBHelper.updateCuenta(cuenta);
-    getCuentas();
+    if (cuenta.isDataComplete) {
+      // Realiza la actualización de la cuenta solo si está completa
+      await DBHelper.updateCuenta(cuenta);
+    } else {
+      // Aquí puedes manejar la lógica si la cuenta no está completa
+      print("Los datos de la cuenta están incompletos.");
+    }
+    getCuentas(); // Actualiza la lista de cuentas
   }
 
   // Métodos para Monedas

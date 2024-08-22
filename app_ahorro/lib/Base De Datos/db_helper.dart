@@ -7,7 +7,6 @@ import 'package:app_ahorro/Base%20De%20Datos/ahorro.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:uuid/uuid.dart';
 
 class DBHelper {
   static Database? _db;
@@ -65,25 +64,26 @@ class DBHelper {
             "FOREIGN KEY (cuentaId) REFERENCES $_cuentasTable (id)"
             ")",
           );
-          db.execute('''
-              CREATE TABLE $_usuariosTable (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                userID TEXT UNIQUE,
-                nombre TEXT,
-                email TEXT,
-                contrasena TEXT
-              );
+          db.execute(
+            "CREATE TABLE $_usuariosTable ("
+            "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+            "userID TEXT UNIQUE,"
+            "nombre TEXT,"
+            "email TEXT,"
+            "contrasena TEXT"
+            ")",
+          );
 
-              CREATE TRIGGER unique_userId
-              BEFORE INSERT ON $_usuariosTable
-              BEGIN
-                SELECT RAISE(ABORT, 'userId already exists')
-                WHERE EXISTS (SELECT 1 FROM $_usuariosTable WHERE userId = NEW.userId);
-              END;
+          db.execute("CREATE TRIGGER unique_userId "
+              "BEFORE INSERT ON $_usuariosTable "
+              "BEGIN "
+              "SELECT RAISE(ABORT, 'userId already exists') "
+              "WHERE EXISTS (SELECT 1 FROM $_usuariosTable WHERE userId = NEW.userId);"
+              "END;");
 
-              CREATE INDEX idx_userId ON $_usuariosTable (userId);
-              CREATE INDEX idx_email ON $_usuariosTable (email);
-            ''');
+          db.execute("CREATE INDEX idx_userId ON $_usuariosTable (userId);");
+
+          db.execute("CREATE INDEX idx_email ON $_usuariosTable (email);");
           db.execute(
             "CREATE TABLE $_ahorroTable ("
             "id INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -211,8 +211,6 @@ class DBHelper {
 
   // Métodos para Usuarios
   static Future<int> insertUsuario(Usuario usuario) async {
-    final userId = const Uuid().v4();
-    usuario.userId = userId;
     if (_db == null) throw Exception('Database not initialized');
     return await _db!.insert(_usuariosTable, usuario.toJson());
   }
@@ -237,6 +235,20 @@ class DBHelper {
       whereArgs: [usuario.id],
     );
   }
+
+  static Future<Usuario?> getUsuarioByUserId(String userId) async {
+    final List<Map<String, dynamic>> result = await _db!.query(
+        _usuariosTable,
+        where: 'userID = ?',
+        whereArgs: [userId],
+    );
+    if (result.isNotEmpty) {
+        return Usuario.fromJson(result.first);
+    } else {
+        return null; // Usuario no encontrado
+    }
+}
+
 
   static Future<String?> getUserIdFromSharedPreferences() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -269,6 +281,4 @@ class DBHelper {
       whereArgs: [ahorro.id],
     );
   }
-
-  
 }

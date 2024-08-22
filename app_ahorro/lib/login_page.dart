@@ -80,7 +80,7 @@ class _LoginPageState extends State<LoginPage> {
                                 (usuario) => usuario.email == valor,
                               );
                             } catch (e) {
-                              return 'Correo invalido';
+                              return 'Correo inválido';
                             }
 
                             return null;
@@ -123,17 +123,7 @@ class _LoginPageState extends State<LoginPage> {
                               }
 
                               if (valor.length != 5) {
-                                return 'El pin debe de ser de 5 digitos';
-                              }
-
-                              try {
-                                dataController.usuarioList
-                                    .firstWhere(
-                                      (usuario) => usuario.userId == valor,
-                                    )
-                                    .toString();
-                              } catch (e) {
-                                return 'Pin inválido';
+                                return 'El pin debe de ser de 5 dígitos';
                               }
 
                               return null;
@@ -158,32 +148,43 @@ class _LoginPageState extends State<LoginPage> {
                           child: OutlinedButton(
                             onPressed: () async {
                               if (!fkey.currentState!.validate()) return;
-                              String? userId = await DBHelper
-                                  .getUserIdFromSharedPreferences();
-                              final List<Usuario> users =
-                                  await DBHelper.queryUsuarios();
-                              final Usuario? user = users.firstWhereOrNull(
-                                  (u) =>
-                                      u.userId.toString() == userId.toString());
-                              final List<Cuenta> cuentas =
-                                  await DBHelper.queryCuentas();
-                              final Cuenta? cuenta = cuentas.firstWhereOrNull(
-                                  (c) =>
-                                      user?.userId.toString() ==
-                                      c.userid.toString());
-                              if (cuenta?.userid == null && user?.userId == null) {
-                                // El usuario existe en la base de datos pero no tiene una cuenta completa
-                                if (cuenta?.cuentaCompleta == false) {
-                                  Navigator.pushReplacementNamed(
-                                    context, '/select_account_details',
-                                    arguments: pinController.text.toString());
-                                }else{
-                                  Navigator.pushReplacementNamed(
-                                  context,
-                                  '/inicio',
+
+                              // Verificar si el usuario existe en la base de datos
+                              final userId = pinController.text.toString();
+                              Usuario? usuario =
+                                  await DBHelper.getUsuarioByUserId(userId);
+
+                              if (usuario != null) {
+                                // Obtener la lista de cuentas
+                                final List<Cuenta> cuentas =
+                                    await DBHelper.queryCuentas();
+
+                                // Verificar si la cuenta existe y pertenece al usuario
+                                final Cuenta? cuenta = cuentas.firstWhereOrNull(
+                                  (c) => c.userid == usuario.userId,
                                 );
+
+                                if (cuenta == null || !cuenta.isDataComplete) {
+                                  // Si la cuenta no existe o no está completa, redirigir a los detalles de la cuenta
+                                  Navigator.pushReplacementNamed(
+                                    context,
+                                    '/select_account_details',
+                                    arguments: pinController.text.toString(),
+                                  );
+                                } else {
+                                  // Si la cuenta está completa, redirigir a la pantalla de inicio
+                                  Navigator.pushReplacementNamed(
+                                    context,
+                                    '/inicio',
+                                  );
                                 }
-                              } 
+                              } else {
+                                // Manejar el caso donde el usuario no existe
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text('Usuario no encontrado')),
+                                );
+                              }
                             },
                             child: const Text(
                               'Ingresar',
@@ -205,7 +206,7 @@ class _LoginPageState extends State<LoginPage> {
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               const Text(
-                                "No tienes una cuenta?",
+                                "¿No tienes una cuenta?",
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     color: Colors.grey),
@@ -215,10 +216,8 @@ class _LoginPageState extends State<LoginPage> {
                                   Navigator.of(context).pushNamed('/signUp');
                                 },
                                 child: const Text(
-                                  "Registrate",
+                                  "Regístrate",
                                   style: TextStyle(
-
-                                      ///done login page
                                       fontWeight: FontWeight.bold,
                                       fontSize: 17,
                                       color: Colors.black),

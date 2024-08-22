@@ -1,30 +1,30 @@
 class Cuenta {
-  int? id; // Llave primaria
+  int? id;
   String userid;
   String nombre;
   String tipo;
   String moneda;
-  bool cuentaCompleta = false;
+  bool isDataComplete;
 
+  // Constructor principal
   Cuenta({
     this.id,
-    required this.nombre,
     required this.userid,
+    required this.nombre,
     required this.tipo,
     required this.moneda,
-  });
+  }) : isDataComplete = nombre.isNotEmpty && tipo.isNotEmpty && moneda.isNotEmpty;
 
-  bool get isDataComplete {
-    return nombre != nombre.isEmpty && tipo != tipo.isEmpty && moneda != moneda.isEmpty;
-  }
-
-  // Constructor para crear una instancia de Cuenta a partir de un JSON
+  // Constructor fromJson
   Cuenta.fromJson(Map<String, dynamic> json)
       : id = json['id'],
         userid = json['userID'],
         nombre = json['nombre'],
         tipo = json['tipo'],
-        moneda = json['moneda'];
+        moneda = json['moneda'],
+        isDataComplete = (json['nombre']?.isNotEmpty ?? false) &&
+                         (json['tipo']?.isNotEmpty ?? false) &&
+                         (json['moneda']?.isNotEmpty ?? false);
 
   // Método para convertir la instancia de Cuenta a JSON
   Map<String, dynamic> toJson() {

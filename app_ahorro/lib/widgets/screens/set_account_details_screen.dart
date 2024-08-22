@@ -27,23 +27,31 @@ class _SetAccountDetailsScreenState extends State<SetAccountDetailsScreen> {
       final DataController dataController = Get.find<DataController>();
 
       Cuenta nuevaCuenta = Cuenta(
-          nombre: _nombreCuenta,
-          userid: userID,
-          tipo: _tipoCuenta,
-          moneda: _moneda ?? '');
+        nombre: _nombreCuenta,
+        userid: userID,
+        tipo: _tipoCuenta,
+        moneda: _moneda ?? '',
+      );
 
-      // Agregar la cuenta al controlador y manejar el resultado
-      dataController.addCuenta(nuevaCuenta).then((result) {
+      // Comprobar si la cuenta tiene todos los datos completos
+      if (nuevaCuenta.isDataComplete) {
+        // Agregar la cuenta al controlador y manejar el resultado
+        dataController.addCuenta(nuevaCuenta).then((result) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Cuenta creada con éxito!')),
+          );
+          Navigator.of(context).pushReplacementNamed('/inicio');
+        }).catchError((e) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(e.toString())),
+          );
+        });
+      } else {
+        // Mostrar un mensaje de error si la cuenta no está completa
         ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Cuenta creada con éxito!')));
-        Navigator.of(context).pushNamed(
-          '/select_currency_screen',
-          arguments: _moneda,
+          const SnackBar(content: Text('Por favor, complete todos los campos')),
         );
-      }).catchError((e) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(e.toString())));
-      });
+      }
     }
 
     return Scaffold(
@@ -114,7 +122,6 @@ class _SetAccountDetailsScreenState extends State<SetAccountDetailsScreen> {
                   if (_formKey.currentState!.validate()) {
                     _formKey.currentState!.save();
                     agregarUsuarios(context);
-                    Navigator.of(context).pushReplacementNamed('/inicio');
                   }
                 },
                 child: const Text('Register Account'),

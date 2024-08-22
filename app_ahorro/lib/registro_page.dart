@@ -1,4 +1,5 @@
 import 'package:app_ahorro/Base%20De%20Datos/data_controller.dart';
+import 'package:app_ahorro/Base%20De%20Datos/db_helper.dart';
 import 'package:app_ahorro/Base%20De%20Datos/usuario.dart';
 import 'package:app_ahorro/widgets/custom_inputs.dart';
 import 'package:email_validator/email_validator.dart';
@@ -18,29 +19,49 @@ class _RegistroPageState extends State<RegistroPage> {
   final contraseniaController = TextEditingController();
   final confirmcontraController = TextEditingController();
   final pinController = TextEditingController();
-  GlobalKey<FormState> formkey = GlobalKey<FormState>();
+  final GlobalKey<FormState> formkey = GlobalKey<FormState>();
   final DataController dataController = Get.put(DataController());
 
   Future<void> registrarUsuario() async {
-    Usuario registrarUsuario = Usuario(
+    try {
+      // Validar si el correo ya está registrado
+      final List<Usuario> users = await DBHelper.queryUsuarios();
+      final bool correoExiste = users.any(
+        (usuario) => usuario.email == correoController.text.trim(),
+      );
+
+      if (correoExiste) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('El correo ya fue registrado')),
+        );
+        return;
+      }
+
+      // Registrar nuevo usuario
+      Usuario registrarUsuario = Usuario(
         userId: pinController.text.trim(),
         nombre: nombreController.text.trim(),
         email: correoController.text.trim(),
-        contrasena: contraseniaController.text.trim());
+        contrasena: contraseniaController.text.trim(),
+      );
 
-    dataController.addUsuario(registrarUsuario).then((_) {
+      await dataController.addUsuario(registrarUsuario);
       ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Usuario creado con exito!')));
-    }).catchError((e) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(e.toString())));
-    });
+        const SnackBar(content: Text('Usuario creado con éxito!')),
+      );
+
+      // Redirigir al login después de registrar el usuario
+      Navigator.of(context).pushReplacementNamed('/login');
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error al registrar usuario: $e')),
+      );
+    }
   }
 
   @override
   void initState() {
     super.initState();
-    formkey;
   }
 
   @override
@@ -53,18 +74,20 @@ class _RegistroPageState extends State<RegistroPage> {
               height: 900,
               width: 600,
               decoration: const BoxDecoration(
-                  gradient: LinearGradient(colors: [
-                Color.fromARGB(255, 8, 90, 8),
-                Color.fromARGB(255, 3, 49, 23),
-              ])),
+                gradient: LinearGradient(colors: [
+                  Color.fromARGB(255, 8, 90, 8),
+                  Color.fromARGB(255, 3, 49, 23),
+                ]),
+              ),
               child: const Padding(
                 padding: EdgeInsets.only(top: 60.0, left: 22),
                 child: Text(
                   'Crea tu \ncuenta!',
                   style: TextStyle(
-                      fontSize: 30,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold),
+                    fontSize: 30,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
@@ -73,8 +96,9 @@ class _RegistroPageState extends State<RegistroPage> {
               child: Container(
                 decoration: const BoxDecoration(
                   borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(40),
-                      topRight: Radius.circular(40)),
+                    topLeft: Radius.circular(40),
+                    topRight: Radius.circular(40),
+                  ),
                   color: Colors.white,
                 ),
                 height: 690,
@@ -88,56 +112,41 @@ class _RegistroPageState extends State<RegistroPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         CustomInputs(
-                            show: false,
-                            controller: nombreController,
-                            validator: (valor) {
-                              if (valor == null || valor.isEmpty) {
-                                return 'El nombre es obligatorio';
-                              }
-
-                              if (valor.length < 3) {
-                                return 'El nombre debe tener al menos 3 caracteres';
-                              }
-
-                              return null;
-                            },
-                            teclado: TextInputType.text,
-                            nombrelabel: 'Nombre',
-                            hint: 'Ingrese su Nombre',
-                            icono: Icons.person),
-                        const SizedBox(
-                          height: 20,
+                          show: false,
+                          controller: nombreController,
+                          validator: (valor) {
+                            if (valor == null || valor.isEmpty) {
+                              return 'El nombre es obligatorio';
+                            }
+                            if (valor.length < 3) {
+                              return 'El nombre debe tener al menos 3 caracteres';
+                            }
+                            return null;
+                          },
+                          teclado: TextInputType.text,
+                          nombrelabel: 'Nombre',
+                          hint: 'Ingrese su Nombre',
+                          icono: Icons.person,
                         ),
+                        const SizedBox(height: 20),
                         CustomInputs(
-                            show: false,
-                            controller: correoController,
-                            validator: (valor) {
-                              if (valor == null || valor.isEmpty) {
-                                return 'El correo es obligatorio';
-                              }
-
-                              if (EmailValidator.validate(valor) == false) {
-                                return 'Correo invalido';
-                              }
-
-                              Usuario correoRegistrado =
-                                  dataController.usuarioList.firstWhere(
-                                (usuario) => usuario.email == valor,
-                              );
-
-                              if (correoRegistrado.toString() != null) {
-                                return 'El correo ya fue registrado';
-                              }
-
-                              return null;
-                            },
-                            teclado: TextInputType.emailAddress,
-                            nombrelabel: 'Correo',
-                            hint: 'Ingrese su correo',
-                            icono: Icons.email),
-                        const SizedBox(
-                          height: 20,
+                          show: false,
+                          controller: correoController,
+                          validator: (valor) {
+                            if (valor == null || valor.isEmpty) {
+                              return 'El correo es obligatorio';
+                            }
+                            if (!EmailValidator.validate(valor)) {
+                              return 'Correo inválido';
+                            }
+                            return null;
+                          },
+                          teclado: TextInputType.emailAddress,
+                          nombrelabel: 'Correo',
+                          hint: 'Ingrese su correo',
+                          icono: Icons.email,
                         ),
+                        const SizedBox(height: 20),
                         PasswordInput(
                           nombrelabel: 'Contraseña',
                           hint: 'Ingrese su contraseña',
@@ -146,43 +155,32 @@ class _RegistroPageState extends State<RegistroPage> {
                             if (valor == null || valor.isEmpty) {
                               return 'Este campo es obligatorio';
                             }
-
                             if (valor.length < 8) {
                               return 'La contraseña debe tener al menos 8 caracteres';
                             }
-
-                            if (valor.contains(RegExp(r'[A-Z]')) == false &&
-                                valor.contains(
-                                        RegExp(r'^(?=.*?[!@#\$&*~_&-])')) ==
-                                    false) {
-                              return 'La contraseña debe contener una mayuscula y un caracter especial';
+                            if (!valor.contains(RegExp(r'[A-Z]')) ||
+                                !valor.contains(RegExp(r'[!@#\$&*~_&-]'))) {
+                              return 'La contraseña debe contener una mayúscula y un carácter especial';
                             }
-
                             return null;
                           },
                         ),
-                        const SizedBox(
-                          height: 20,
-                        ),
+                        const SizedBox(height: 20),
                         PasswordInput(
                           nombrelabel: 'Confirmar Contraseña',
-                          hint: 'Confrima tu Contraseña',
+                          hint: 'Confirma tu Contraseña',
                           controller: confirmcontraController,
                           validator: (valor) {
                             if (valor == null || valor.isEmpty) {
                               return 'Este campo es obligatorio';
                             }
-
                             if (valor != contraseniaController.text) {
                               return 'Las contraseñas no coinciden';
                             }
-
                             return null;
                           },
                         ),
-                        const SizedBox(
-                          height: 20,
-                        ),
+                        const SizedBox(height: 20),
                         CustomInputs(
                           show: true,
                           controller: pinController,
@@ -190,11 +188,9 @@ class _RegistroPageState extends State<RegistroPage> {
                             if (valor == null || valor.isEmpty) {
                               return 'Este campo es obligatorio';
                             }
-
                             if (valor.length != 5) {
-                              return 'El pin debe de ser de 5 digitos';
+                              return 'El pin debe de ser de 5 dígitos';
                             }
-
                             return null;
                           },
                           teclado: TextInputType.phone,
@@ -207,32 +203,29 @@ class _RegistroPageState extends State<RegistroPage> {
                           height: 55,
                           width: 300,
                           decoration: const BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(40)),
-                              gradient: LinearGradient(colors: [
-                                Color.fromARGB(255, 8, 90, 8),
-                                Color.fromARGB(255, 3, 49, 23),
-                              ])),
+                            borderRadius: BorderRadius.all(Radius.circular(40)),
+                            gradient: LinearGradient(colors: [
+                              Color.fromARGB(255, 8, 90, 8),
+                              Color.fromARGB(255, 3, 49, 23),
+                            ]),
+                          ),
                           child: OutlinedButton(
                             onPressed: () {
                               if (!formkey.currentState!.validate()) return;
                               registrarUsuario();
-                              Navigator.of(context)
-                                  .pushReplacementNamed('/login');
                             },
                             child: const Text(
                               'Registrarse',
                               style: TextStyle(
-                                  fontSize: 25,
-                                  fontWeight: FontWeight.bold,
-                                  fontStyle: FontStyle.italic,
-                                  color: Colors.white),
+                                fontSize: 25,
+                                fontWeight: FontWeight.bold,
+                                fontStyle: FontStyle.italic,
+                                color: Colors.white,
+                              ),
                             ),
                           ),
                         ),
-                        const SizedBox(
-                          height: 150,
-                        ),
+                        const SizedBox(height: 150),
                       ],
                     ),
                   ),
