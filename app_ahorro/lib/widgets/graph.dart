@@ -31,6 +31,7 @@ class _LineChartWidgetState extends State<LineChartWidget> {
   }
 
   Future<void> syncData() async {
+    if (mounted) {  
     final ingresos = await DBHelper.queryIngresos();
     setState(() {
       allSpots = ingresos.asMap().entries.map((entry) {
@@ -39,6 +40,7 @@ class _LineChartWidgetState extends State<LineChartWidget> {
         return FlSpot(index, ingreso);
       }).toList();
     });
+  }
   }
 
   @override

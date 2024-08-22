@@ -30,15 +30,17 @@ class _LineChartGastosWidgetState extends State<LineChartGastosWidget> {
     syncData();
   }
 
-  Future<void> syncData() async {
+ Future<void> syncData() async {
     final gastos = await DBHelper.queryGastos();
-    setState(() {
-      allSpots = gastos.asMap().entries.map((entry) {
-        final index = entry.key.toDouble();
-        final gasto = entry.value.monto;
-        return FlSpot(index, gasto);
-      }).toList();
-    });
+    if (mounted) {  
+      setState(() {
+        allSpots = gastos.asMap().entries.map((entry) {
+          final index = entry.key.toDouble();
+          final gastos = entry.value.monto;
+          return FlSpot(index, gastos);
+        }).toList();
+      });
+    }
   }
 
   @override
