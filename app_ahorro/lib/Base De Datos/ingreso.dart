@@ -2,7 +2,7 @@ class Ingreso {
   int? id; // Llave primaria
   double monto;
   DateTime fecha;
-  int? cuentaId; // Llave foránea que referencia a la clase Cuenta
+  String? cuentaId; // Llave foránea que referencia a la clase Cuenta
   String descripcion;
 
   Ingreso({

@@ -1,6 +1,7 @@
-import 'package:app_ahorro/Base%20De%20Datos/db_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:app_ahorro/Base%20De%20Datos/db_helper.dart';
+import 'package:app_ahorro/Base%20De%20Datos/cuenta.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -12,8 +13,11 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   final TextEditingController _goalController = TextEditingController();
   double _goal = 1000.0;
+  List<Cuenta> _cuentas = [];
   String? _selectedCurrency;
-  final List<String> _currencySymbols = ['L', '\$', '€']; // Simbolos de moneda
+  String? _selectedCuenta;
+
+  final List<String> _currencySymbols = ['L', '\$', '€']; // Símbolos de moneda
   final Map<String, String> _currencyNames = {
     'L': 'Lempira',
     '\$': 'Dólar',
@@ -25,6 +29,32 @@ class _SettingsScreenState extends State<SettingsScreen> {
     super.initState();
     _loadGoal();
     _loadCurrency();
+    _loadCuentas();
+    _loadSelectedCuenta();
+  }
+
+  Future<void> _loadCuentas() async {
+    List<Cuenta> cuentas = await DBHelper.queryCuentas();
+    setState(() {
+      _cuentas = cuentas;
+    });
+  }
+
+  Future<void> _loadSelectedCuenta() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _selectedCuenta = prefs.getString('selectedCuenta');
+    });
+  }
+
+  void _onCuentaSelected(String? value) async {
+    setState(() {
+      _selectedCuenta = value;
+    });
+
+    // Guardar la cuenta seleccionada en SharedPreferences
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('selectedCuenta', value ?? '');
   }
 
   Future<void> _loadGoal() async {
@@ -59,10 +89,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   void logout() async {
-  await DBHelper.clearUserId();
-  Navigator.of(context).pushReplacementNamed('/login'); // Redirige a la pantalla de login
-}
-
+    await DBHelper.clearUserId();
+    Navigator.of(context).pushReplacementNamed('/login'); // Redirige a la pantalla de login
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -112,6 +141,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   _changeCurrency(newValue);
                 }
               },
+            ),
+          ),
+          
+          // Cambiar Cuenta
+          ListTile(
+            title: const Text('Cambiar Cuenta'),
+            leading: const Icon(Icons.person),
+            trailing: DropdownButton<String>(
+              value: _selectedCuenta,
+              hint: Text('Seleccione una cuenta'),
+              onChanged: _onCuentaSelected,
+              items: _cuentas.map((cuenta) {
+                return DropdownMenuItem<String>(
+                  value: cuenta.nombre,
+                  child: Text(cuenta.nombre),
+                );
+              }).toList(),
             ),
           ),
           

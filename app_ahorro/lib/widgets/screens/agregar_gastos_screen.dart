@@ -49,7 +49,7 @@ class _AgregarGastoPageState extends State<AgregarGastoPage> {
     final gasto = Gasto(
       monto: monto,
       fecha: DateTime.now(),
-      cuentaId: _selectedCuenta!.id,
+      cuentaId: _selectedCuenta!.nombre,
       descripcion: descripcion,
     );
 

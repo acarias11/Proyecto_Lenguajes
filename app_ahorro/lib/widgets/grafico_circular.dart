@@ -27,11 +27,13 @@ class PieChart2State extends State<PieChartSample2> {
     // Cargar ingresos y calcular el total
     List<Ingreso> ingresos = await DBHelper.queryIngresos();
     List<Gasto> gastos = await DBHelper.queryGastos();
+    if (mounted) {  
 
     setState(() {
       totalIngresos = ingresos.fold(0, (sum, item) => sum + item.monto);
       totalGastos = gastos.fold(0, (sum, item) => sum + item.monto);
     });
+    }
   }
 
   @override

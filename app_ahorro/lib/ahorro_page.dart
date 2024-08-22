@@ -4,6 +4,7 @@ import 'Base De Datos/ahorro.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:liquid_progress_indicator_v2/liquid_progress_indicator.dart';
 
+
 class AhorroPage extends StatefulWidget {
   const AhorroPage({super.key});
 
@@ -15,23 +16,38 @@ class _AhorroPageState extends State<AhorroPage> {
   List<Ahorro> _ahorro = [];
   double _totalAhorros = 0.0;
   double _goal = 1000.0; // Valor predeterminado
+  String? selectedCuenta;
+  
+
 
   @override
   void initState() {
     super.initState();
     _loadAhorros();
     _loadGoal();
-  }
+        _laodComparacion();
 
-  Future<void> _loadAhorros() async {
+  }
+ Future<void> _laodComparacion() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      selectedCuenta = prefs.getString('selectedCuenta') ?? '';
+    });
+  }
+   Future<void> _loadAhorros() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? selectedCuenta = prefs.getString('selectedCuenta');
     try {
-      final ahorro = await DBHelper.queryAhorro();
+      final ahorros = await DBHelper.queryAhorro();
+      final filteredAhorro = ahorros.where((ahorro) {
+        return ahorro.cuentaId == selectedCuenta;
+      }).toList();
+
       setState(() {
-        _ahorro = ahorro;
-        _totalAhorros = _ahorro.fold(0.0, (sum, item) => sum + item.monto);
+        _ahorro = filteredAhorro;
       });
     } catch (e) {
-      print('Error al cargar Ahorros: $e');
+      print('Error al cargar ingresos: $e');
     }
   }
 
@@ -84,7 +100,6 @@ class _AhorroPageState extends State<AhorroPage> {
                   Color cardColor = ahorros.monto > 900
                       ? Colors.yellow[900]!
                       : (Colors.yellow[ahorros.monto.truncate() % 1000] ?? Colors.yellow); 
-
                   return Card(
                     color: cardColor,
                     margin: const EdgeInsets.symmetric(vertical: 8.0),
@@ -104,7 +119,7 @@ class _AhorroPageState extends State<AhorroPage> {
                       ),
                     ),
                   );
-                },
+                }
               ),
             ],
           ),

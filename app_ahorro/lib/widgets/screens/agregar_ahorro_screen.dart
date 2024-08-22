@@ -49,7 +49,7 @@ class _AgregarAhorroPageState extends State<AgregarAhorroPage> {
     final ahorro = Ahorro(
       monto: monto,
       fecha: DateTime.now(),
-      cuentaId: _selectedCuenta!.id,
+      cuentaId: _selectedCuenta!.nombre,
       descripcion: descripcion,
     );
 

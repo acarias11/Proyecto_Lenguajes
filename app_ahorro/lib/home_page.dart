@@ -16,7 +16,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   String _selectedCurrency = '';
-
   List<Ingreso> _ingreso = [];
   List<Gasto> _gastos = [];
 
@@ -36,10 +35,16 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _loadIngreso() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? selectedCuenta = prefs.getString('selectedCuenta');
     try {
       final ingresos = await DBHelper.queryIngresos();
+      final filteredIngresos = ingresos.where((ingreso) {
+        return ingreso.cuentaId == selectedCuenta;
+      }).toList();
+
       setState(() {
-        _ingreso = ingresos;
+        _ingreso = filteredIngresos;
       });
     } catch (e) {
       print('Error al cargar ingresos: $e');
@@ -57,14 +62,20 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  Future<void> _loadGastos() async {
+   Future<void> _loadGastos() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? selectedCuenta = prefs.getString('selectedCuenta');
     try {
       final gastos = await DBHelper.queryGastos();
+      final filteredGastos = gastos.where((ingreso) {
+        return ingreso.cuentaId == selectedCuenta;
+      }).toList();
+
       setState(() {
-        _gastos = gastos;
+        _gastos = filteredGastos;
       });
     } catch (e) {
-      print('Error al cargar gastos: $e');
+      print('Error al cargar ingresos: $e');
     }
   }
 

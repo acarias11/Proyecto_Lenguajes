@@ -50,7 +50,7 @@ class _PrimerIngresoScreenState extends State<PrimerIngresoScreen> {
     final ingreso = Ingreso(
       monto: monto,
       fecha: DateTime.now(),
-      cuentaId: _selectedCuenta!.id,
+      cuentaId: _selectedCuenta!.nombre,
       descripcion: descripcion,
     );
 

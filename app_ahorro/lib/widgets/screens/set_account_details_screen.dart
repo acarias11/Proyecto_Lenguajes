@@ -92,10 +92,7 @@ class _SetAccountDetailsScreenState extends State<SetAccountDetailsScreen> {
                 },
               ),
               const SizedBox(height: 16),
-              TextFormField(
-                controller: pinController,
-                readOnly: true,
-              ),
+              
               DropdownButtonFormField<String>(
                 decoration: const InputDecoration(labelText: 'Currency'),
                 items: const [

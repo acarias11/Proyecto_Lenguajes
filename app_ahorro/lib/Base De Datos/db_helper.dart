@@ -49,7 +49,7 @@ class DBHelper {
             "id INTEGER PRIMARY KEY AUTOINCREMENT,"
             "monto REAL,"
             "fecha TEXT,"
-            "cuentaId INTEGER,"
+            "cuentaId TEXT,"
             "descripcion TEXT,"
             "FOREIGN KEY (cuentaId) REFERENCES $_cuentasTable (id)"
             ")",
@@ -59,7 +59,7 @@ class DBHelper {
             "id INTEGER PRIMARY KEY AUTOINCREMENT,"
             "monto REAL,"
             "fecha TEXT,"
-            "cuentaId INTEGER,"
+            "cuentaId TEXT,"
             "descripcion TEXT,"
             "FOREIGN KEY (cuentaId) REFERENCES $_cuentasTable (id)"
             ")",
@@ -89,7 +89,7 @@ class DBHelper {
             "id INTEGER PRIMARY KEY AUTOINCREMENT,"
             "monto REAL,"
             "fecha TEXT,"
-            "cuentaId INTEGER,"
+            "cuentaId TEXT,"
             "descripcion TEXT,"
             "FOREIGN KEY (cuentaId) REFERENCES $_cuentasTable (id)"
             ")",
