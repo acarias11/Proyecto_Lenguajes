@@ -27,8 +27,8 @@ class _PruebasAgregarPageState extends State<PruebasAgregarPage> {
     _loadMoneda();
     
   }
-   String? uid1 ='u001';
-   String? uid2 ='u002';
+   String uid1 ='u001';
+   String uid2 ='u002';
 
    
 

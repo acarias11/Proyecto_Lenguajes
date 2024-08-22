@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:app_ahorro/Base%20De%20Datos/data_controller.dart';
 import 'package:app_ahorro/Base%20De%20Datos/db_helper.dart';
 import 'package:app_ahorro/Base%20De%20Datos/usuario.dart';
@@ -16,7 +15,6 @@ class RegistroPage extends StatefulWidget {
 }
 
 class _RegistroPageState extends State<RegistroPage> {
-  List<Usuario> _usuarios = [];
   final nombreController = TextEditingController();
   final correoController = TextEditingController();
   final contraseniaController = TextEditingController();
@@ -38,22 +36,22 @@ class _RegistroPageState extends State<RegistroPage> {
   }
 
   Future<void> registrarUsuario() async {
-    final String userID = generateRandomUserID(7);
+    final userid = await DBHelper.getUserIdFromSharedPreferences();
     Usuario registrarUsuario = Usuario(
-        userId: userID,
+      userId: userid.toString(),
         nombre: nombreController.text.trim(),
         email: correoController.text.trim(),
         contrasena: contraseniaController.text.trim());
 
     dataController.addUsuario(registrarUsuario).then((_) {
       ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Cuenta creada con exito!')));
+          const SnackBar(content: Text('Usuario creado con exito!')));
     }).catchError((e) {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(e.toString())));
     });
   }
-  
+
   @override
   void initState() {
     super.initState();

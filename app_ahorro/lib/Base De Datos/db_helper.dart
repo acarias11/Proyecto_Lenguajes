@@ -4,8 +4,10 @@ import 'package:app_ahorro/Base%20De%20Datos/ingreso.dart';
 import 'package:app_ahorro/Base%20De%20Datos/moneda.dart';
 import 'package:app_ahorro/Base%20De%20Datos/usuario.dart';
 import 'package:app_ahorro/Base%20De%20Datos/ahorro.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:uuid/uuid.dart';
 
 class DBHelper {
   static Database? _db;
@@ -63,15 +65,25 @@ class DBHelper {
             "FOREIGN KEY (cuentaId) REFERENCES $_cuentasTable (id)"
             ")",
           );
-          db.execute(
-            "CREATE TABLE $_usuariosTable ("
-            "id INTEGER PRIMARY KEY AUTOINCREMENT,"
-            "userID TEXT,"
-            "nombre TEXT,"
-            "email TEXT,"
-            "contrasena TEXT"
-            ")",
-          );
+          db.execute('''
+              CREATE TABLE $_usuariosTable (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                userID TEXT UNIQUE,
+                nombre TEXT,
+                email TEXT,
+                contrasena TEXT
+              );
+
+              CREATE TRIGGER unique_userId
+              BEFORE INSERT ON $_usuariosTable
+              BEGIN
+                SELECT RAISE(ABORT, 'userId already exists')
+                WHERE EXISTS (SELECT 1 FROM $_usuariosTable WHERE userId = NEW.userId);
+              END;
+
+              CREATE INDEX idx_userId ON $_usuariosTable (userId);
+              CREATE INDEX idx_email ON $_usuariosTable (email);
+            ''');
           db.execute(
             "CREATE TABLE $_ahorroTable ("
             "id INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -196,10 +208,13 @@ class DBHelper {
       whereArgs: [gasto.id],
     );
   }
+
   // Métodos para Usuarios
-  static Future<int> insertUsuario(Usuario? usuario) async {
+  static Future<int> insertUsuario(Usuario usuario) async {
+    final userId = const Uuid().v4();
+    usuario.userId = userId;
     if (_db == null) throw Exception('Database not initialized');
-    return await _db!.insert(_usuariosTable, usuario!.toJson());
+    return await _db!.insert(_usuariosTable, usuario.toJson());
   }
 
   static Future<List<Usuario>> queryUsuarios() async {
@@ -221,6 +236,11 @@ class DBHelper {
       where: 'id = ?',
       whereArgs: [usuario.id],
     );
+  }
+
+  static Future<String?> getUserIdFromSharedPreferences() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('userID');
   }
 
   // Métodos para Ahorro
@@ -249,4 +269,6 @@ class DBHelper {
       whereArgs: [ahorro.id],
     );
   }
+
+  
 }

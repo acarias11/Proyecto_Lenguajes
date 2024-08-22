@@ -1,11 +1,7 @@
 import 'package:app_ahorro/Base%20De%20Datos/cuenta.dart';
 import 'package:app_ahorro/Base%20De%20Datos/data_controller.dart';
-import 'package:app_ahorro/Base%20De%20Datos/db_helper.dart';
-import 'package:app_ahorro/Base%20De%20Datos/usuario.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:app_ahorro/registro_page.dart';
-import 'package:path/path.dart';
 
 class SetAccountDetailsScreen extends StatefulWidget {
   const SetAccountDetailsScreen({super.key, required this.usuario});
@@ -24,7 +20,7 @@ class _SetAccountDetailsScreenState extends State<SetAccountDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final userID = ModalRoute.of(context)!.settings.arguments as String?;
+    final userID = ModalRoute.of(context)!.settings.arguments as String;
 
     Future<void> agregarUsuarios(BuildContext context) async {
       final DataController dataController = Get.find<DataController>();

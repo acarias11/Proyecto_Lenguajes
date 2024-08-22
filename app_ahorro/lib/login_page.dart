@@ -1,5 +1,4 @@
 import 'package:app_ahorro/Base%20De%20Datos/data_controller.dart';
-import 'package:app_ahorro/Base%20De%20Datos/usuario.dart';
 import 'package:flutter/material.dart';
 import 'package:app_ahorro/widgets/custom_inputs.dart';
 import 'package:get/get.dart';
@@ -125,7 +124,8 @@ class _LoginPageState extends State<LoginPage> {
                           child: OutlinedButton(
                             onPressed: () {
                               if (!fkey.currentState!.validate()) return;
-                              Navigator.of(context).pushReplacementNamed('/select_account_details', arguments: usuarioParametro);
+                              
+                              Navigator.of(context).pushReplacementNamed('/splash', arguments: usuarioParametro);
                             },
                             child: const Text(
                               'Ingresar',
