@@ -1,6 +1,4 @@
-import 'dart:math';
 import 'package:app_ahorro/Base%20De%20Datos/data_controller.dart';
-import 'package:app_ahorro/Base%20De%20Datos/db_helper.dart';
 import 'package:app_ahorro/Base%20De%20Datos/usuario.dart';
 import 'package:app_ahorro/widgets/custom_inputs.dart';
 import 'package:email_validator/email_validator.dart';
@@ -19,26 +17,13 @@ class _RegistroPageState extends State<RegistroPage> {
   final correoController = TextEditingController();
   final contraseniaController = TextEditingController();
   final confirmcontraController = TextEditingController();
+  final pinController = TextEditingController();
   GlobalKey<FormState> formkey = GlobalKey<FormState>();
   final DataController dataController = Get.put(DataController());
 
-  String generateRandomUserID(int length) {
-    const String validCharacters = 'abcdefghijklmnopqrstuvwxyz0123456789';
-    final Random random = Random();
-    final StringBuffer buffer = StringBuffer();
-
-    for (int i = 0; i < length; i++) {
-      final int randomIndex = random.nextInt(validCharacters.length);
-      buffer.write(validCharacters[randomIndex]);
-    }
-
-    return buffer.toString();
-  }
-
   Future<void> registrarUsuario() async {
-    final userid = await DBHelper.getUserIdFromSharedPreferences();
     Usuario registrarUsuario = Usuario(
-      userId: userid.toString(),
+        userId: pinController.text.trim(),
         nombre: nombreController.text.trim(),
         email: correoController.text.trim(),
         contrasena: contraseniaController.text.trim());
@@ -103,6 +88,7 @@ class _RegistroPageState extends State<RegistroPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         CustomInputs(
+                            show: false,
                             controller: nombreController,
                             validator: (valor) {
                               if (valor == null || valor.isEmpty) {
@@ -123,6 +109,7 @@ class _RegistroPageState extends State<RegistroPage> {
                           height: 20,
                         ),
                         CustomInputs(
+                            show: false,
                             controller: correoController,
                             validator: (valor) {
                               if (valor == null || valor.isEmpty) {
@@ -177,9 +164,6 @@ class _RegistroPageState extends State<RegistroPage> {
                         const SizedBox(
                           height: 20,
                         ),
-                        const SizedBox(
-                          height: 20,
-                        ),
                         PasswordInput(
                           nombrelabel: 'Confirmar Contraseña',
                           hint: 'Confrima tu Contraseña',
@@ -197,8 +181,28 @@ class _RegistroPageState extends State<RegistroPage> {
                           },
                         ),
                         const SizedBox(
-                          height: 70,
+                          height: 20,
                         ),
+                        CustomInputs(
+                          show: true,
+                          controller: pinController,
+                          validator: (valor) {
+                            if (valor == null || valor.isEmpty) {
+                              return 'Este campo es obligatorio';
+                            }
+
+                            if (valor.length != 5) {
+                              return 'El pin debe de ser de 5 digitos';
+                            }
+
+                            return null;
+                          },
+                          teclado: TextInputType.phone,
+                          hint: 'Ingrese un pin',
+                          nombrelabel: 'Pin',
+                          icono: Icons.pin_rounded,
+                        ),
+                        const SizedBox(height: 70),
                         Container(
                           height: 55,
                           width: 300,

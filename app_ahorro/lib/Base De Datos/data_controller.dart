@@ -57,6 +57,9 @@ class DataController extends GetxController {
   }
 
   Future<void> updateCuenta(Cuenta cuenta) async {
+     if (cuenta.isDataComplete == true) {
+    cuenta.cuentaCompleta = true;
+  }
     await DBHelper.updateCuenta(cuenta);
     getCuentas();
   }

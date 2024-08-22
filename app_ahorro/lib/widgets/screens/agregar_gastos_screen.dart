@@ -122,6 +122,7 @@ class _AgregarGastoPageState extends State<AgregarGastoPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                   CustomInputs(
+                    show: false,
                     controller: _montoController,
                     teclado: TextInputType.number,
                     validator: (valor) {
@@ -140,6 +141,7 @@ class _AgregarGastoPageState extends State<AgregarGastoPage> {
                     icono: Icons.money_rounded,
                   ),
                   CustomInputs(
+                    show: false,
                     controller: _descripcionController,
                     validator: null,
                     nombrelabel: 'Descripción',

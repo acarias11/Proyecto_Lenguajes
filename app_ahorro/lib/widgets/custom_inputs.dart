@@ -8,7 +8,8 @@ class CustomInputs extends StatelessWidget {
     required this.teclado,
     required this.hint,
     required this.nombrelabel,
-    required this.icono
+    required this.icono,
+    required this.show
     });
 
   final TextEditingController controller;
@@ -17,10 +18,12 @@ class CustomInputs extends StatelessWidget {
   final String? hint;
   final String nombrelabel;
   final IconData? icono;
+  final bool show;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      obscureText: show,
       controller: controller,
       validator: null,
       keyboardType: teclado,

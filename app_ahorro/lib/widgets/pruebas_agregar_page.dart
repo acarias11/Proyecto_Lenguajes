@@ -29,6 +29,7 @@ class _PruebasAgregarPageState extends State<PruebasAgregarPage> {
   }
    String uid1 ='u001';
    String uid2 ='u002';
+   String uid3 ='u003';
 
    
 
@@ -111,6 +112,7 @@ class _PruebasAgregarPageState extends State<PruebasAgregarPage> {
         moneda: 'Dolares',
       );
       Cuenta c3 =Cuenta(
+        userid: uid3,
         nombre: 'Pablo Pruebas', 
         tipo: 'Ahorro', 
         moneda: 'Euros'

@@ -13,6 +13,7 @@ class SetAccountDetailsScreen extends StatefulWidget {
 }
 
 class _SetAccountDetailsScreenState extends State<SetAccountDetailsScreen> {
+  final pinController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   String _tipoCuenta = '';
   String _nombreCuenta = '';
@@ -84,6 +85,10 @@ class _SetAccountDetailsScreenState extends State<SetAccountDetailsScreen> {
                 },
               ),
               const SizedBox(height: 16),
+              TextFormField(
+                controller: pinController,
+                readOnly: true,
+              ),
               DropdownButtonFormField<String>(
                 decoration: const InputDecoration(labelText: 'Currency'),
                 items: const [

@@ -1,4 +1,7 @@
+import 'package:app_ahorro/Base%20De%20Datos/cuenta.dart';
 import 'package:app_ahorro/Base%20De%20Datos/data_controller.dart';
+import 'package:app_ahorro/Base%20De%20Datos/db_helper.dart';
+import 'package:app_ahorro/Base%20De%20Datos/usuario.dart';
 import 'package:flutter/material.dart';
 import 'package:app_ahorro/widgets/custom_inputs.dart';
 import 'package:get/get.dart';
@@ -11,8 +14,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  String? usuarioParametro;
   final DataController dataController = Get.put(DataController());
+  final pinController = TextEditingController();
   final correocontroller = TextEditingController();
   final contracontroller = TextEditingController();
   final GlobalKey<FormState> fkey = GlobalKey<FormState>();
@@ -61,6 +64,7 @@ class _LoginPageState extends State<LoginPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         CustomInputs(
+                          show: false,
                           nombrelabel: 'Correo',
                           hint: 'Ingrese su correo',
                           teclado: TextInputType.emailAddress,
@@ -87,27 +91,57 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         PasswordInput(
                           nombrelabel: 'Password',
-                          hint: 'Ingrese su contrasenia',
+                          hint: 'Ingrese su contraseña',
                           controller: contracontroller,
                           validator: (valor) {
-                          if (valor == null || valor.isEmpty) {
-                            return 'La contraseña es obligatoria';
-                          }
+                            if (valor == null || valor.isEmpty) {
+                              return 'La contraseña es obligatoria';
+                            }
 
-                          try {
-                            usuarioParametro = dataController.usuarioList.firstWhere(
-                              (usuario) => usuario.contrasena == valor,
-                            ).toString();
-                          } catch (e) {
-                            return 'Contraseña inválida';
-                          }
+                            try {
+                              dataController.usuarioList
+                                  .firstWhere(
+                                    (usuario) => usuario.contrasena == valor,
+                                  )
+                                  .toString();
+                            } catch (e) {
+                              return 'Contraseña inválida';
+                            }
 
-                          return null;
-                        },
+                            return null;
+                          },
                         ),
                         const SizedBox(
                           height: 20,
                         ),
+                        CustomInputs(
+                            show: true,
+                            controller: pinController,
+                            validator: (valor) {
+                              if (valor == null || valor.isEmpty) {
+                                return 'Este campo es obligatorio';
+                              }
+
+                              if (valor.length != 5) {
+                                return 'El pin debe de ser de 5 digitos';
+                              }
+
+                              try {
+                                dataController.usuarioList
+                                    .firstWhere(
+                                      (usuario) => usuario.userId == valor,
+                                    )
+                                    .toString();
+                              } catch (e) {
+                                return 'Pin inválido';
+                              }
+
+                              return null;
+                            },
+                            teclado: TextInputType.phone,
+                            hint: 'Ingrese su pin',
+                            nombrelabel: 'Pin',
+                            icono: Icons.pin_rounded),
                         const SizedBox(
                           height: 70,
                         ),
@@ -122,10 +156,34 @@ class _LoginPageState extends State<LoginPage> {
                                 Color.fromARGB(255, 3, 49, 23),
                               ])),
                           child: OutlinedButton(
-                            onPressed: () {
+                            onPressed: () async {
                               if (!fkey.currentState!.validate()) return;
-                              
-                              Navigator.of(context).pushReplacementNamed('/splash', arguments: usuarioParametro);
+                              String? userId = await DBHelper
+                                  .getUserIdFromSharedPreferences();
+                              final List<Usuario> users =
+                                  await DBHelper.queryUsuarios();
+                              final Usuario? user = users.firstWhereOrNull(
+                                  (u) =>
+                                      u.userId.toString() == userId.toString());
+                              final List<Cuenta> cuentas =
+                                  await DBHelper.queryCuentas();
+                              final Cuenta? cuenta = cuentas.firstWhereOrNull(
+                                  (c) =>
+                                      user?.userId.toString() ==
+                                      c.userid.toString());
+                              if (cuenta?.userid == null && user?.userId == null) {
+                                // El usuario existe en la base de datos pero no tiene una cuenta completa
+                                if (cuenta?.cuentaCompleta == false) {
+                                  Navigator.pushReplacementNamed(
+                                    context, '/select_account_details',
+                                    arguments: pinController.text.toString());
+                                }else{
+                                  Navigator.pushReplacementNamed(
+                                  context,
+                                  '/inicio',
+                                );
+                                }
+                              } 
                             },
                             child: const Text(
                               'Ingresar',
@@ -154,8 +212,7 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                               TextButton(
                                 onPressed: () {
-                                  Navigator.of(context)
-                                      .pushNamed('/signUp');
+                                  Navigator.of(context).pushNamed('/signUp');
                                 },
                                 child: const Text(
                                   "Registrate",
