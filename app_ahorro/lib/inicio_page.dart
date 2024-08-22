@@ -2,14 +2,12 @@ import 'package:app_ahorro/ahorro_page.dart';
 import 'package:app_ahorro/historial_page.dart';
 import 'package:app_ahorro/widgets/configuraciones_page.dart';
 import 'package:app_ahorro/widgets/graficos_page.dart';
-import 'package:app_ahorro/widgets/graph.dart';
 import 'package:app_ahorro/home_page.dart';
 import 'package:app_ahorro/widgets/screens/agregar_ahorro_screen.dart';
 import 'package:app_ahorro/widgets/screens/agregar_gastos_screen.dart';
 import 'package:app_ahorro/widgets/screens/agregar_ingresos_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:animated_floating_buttons/animated_floating_buttons.dart';
 
@@ -38,11 +36,11 @@ class _InicioPageState extends State<InicioPage> {
       child: FloatingActionButton(
         backgroundColor: Colors.blue,
         onPressed: (){
-           Navigator.push(context,MaterialPageRoute(builder: (context) => AddIngresoPage()));
+           Navigator.push(context,MaterialPageRoute(builder: (context) => const AddIngresoPage()));
         },
         heroTag: "btn2",
         tooltip: 'Second button',
-        child:Text('Ingresos'),
+        child:const Text('Ingresos'),
       ),
     );
 }
@@ -51,11 +49,11 @@ Widget float2() {
       child: FloatingActionButton(
         backgroundColor: Colors.red,
         onPressed: (){
-          Navigator.push(context,MaterialPageRoute(builder: (context) => AgregarGastoPage()));
+          Navigator.push(context,MaterialPageRoute(builder: (context) => const AgregarGastoPage()));
         },
         heroTag: "btn1",
         tooltip: 'First button',
-        child:Text('Gastos'),
+        child:const Text('Gastos'),
       ),
     );
 }
@@ -64,11 +62,11 @@ Widget float3() {
       child: FloatingActionButton(
         backgroundColor: Colors.yellow,
         onPressed: (){
-          Navigator.push(context,MaterialPageRoute(builder: (context) => AgregarAhorroPage()));
+          Navigator.push(context,MaterialPageRoute(builder: (context) => const AgregarAhorroPage()));
         },
         heroTag: "btn3",
         tooltip: 'third button',
-        child:Text('Ahorros'),
+        child:const Text('Ahorros'),
       ),
     );
 }
@@ -80,7 +78,7 @@ Widget float3() {
           currentIndex+index;
           setState(() {});
         },
-        children:   [
+        children:   const [
            HistorialPage(),
            AhorroPage(),
            HomePage(),

@@ -5,7 +5,7 @@ class LiquidBottlePage extends StatefulWidget {
   final String title;
   final double waterLevel; // Nivel de agua recibido
 
-  LiquidBottlePage({Key? key, required this.title, required this.waterLevel}) : super(key: key);
+  const LiquidBottlePage({super.key, required this.title, required this.waterLevel});
 
   @override
   _LiquidBottlePageState createState() => _LiquidBottlePageState();
@@ -55,22 +55,22 @@ class _LiquidBottlePageState extends State<LiquidBottlePage> {
       padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 40),
       child: Center(
         child: ToggleButtons(
-          children: [
+          isSelected: List<bool>.generate(3, (index) => index == selectedStyle),
+          onPressed: (index) => setState(() => selectedStyle = index),
+          children: const [
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 30),
+              padding: EdgeInsets.symmetric(vertical: 5, horizontal: 30),
               child: Icon(Icons.crop_portrait),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 30),
+              padding: EdgeInsets.symmetric(vertical: 5, horizontal: 30),
               child: Icon(Icons.circle_outlined),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 30),
+              padding: EdgeInsets.symmetric(vertical: 5, horizontal: 30),
               child: Icon(Icons.change_history),
             ),
           ],
-          isSelected: List<bool>.generate(3, (index) => index == selectedStyle),
-          onPressed: (index) => setState(() => selectedStyle = index),
         ),
       ),
     );
@@ -85,11 +85,11 @@ class _LiquidBottlePageState extends State<LiquidBottlePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Spacer(),
+            const Spacer(),
             bottle,
-            Spacer(),
+            const Spacer(),
             stylePicker,
-            Spacer(),
+            const Spacer(),
           ],
         ),
       ),

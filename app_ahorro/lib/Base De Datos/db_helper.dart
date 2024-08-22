@@ -10,22 +10,22 @@ import 'package:sqflite/sqflite.dart';
 
 class DBHelper {
   static Database? _db;
-  static final int _version = 1;
-  static final String _cuentasTable = "cuentas";
-  static final String _monedasTable = "monedas";
-  static final String _ingresosTable = "ingresos";
-  static final String _gastosTable = "gastos";
-  static final String _usuariosTable = "usuarios";
-  static final String _ahorroTable = "ahorro";
+  static const int _version = 1;
+  static const String _cuentasTable = "cuentas";
+  static const String _monedasTable = "monedas";
+  static const String _ingresosTable = "ingresos";
+  static const String _gastosTable = "gastos";
+  static const String _usuariosTable = "usuarios";
+  static const String _ahorroTable = "ahorro";
 
   // Inicializar la base de datos
   static Future<void> initDB() async {
     if (_db != null) return;
 
     try {
-      String _path = join(await getDatabasesPath(), 'app_ahorro.db');
+      String path = join(await getDatabasesPath(), 'app_ahorro.db');
       _db = await openDatabase(
-        _path,
+        path,
         version: _version,
         onCreate: (db, version) {
           db.execute(

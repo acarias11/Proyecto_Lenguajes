@@ -6,6 +6,8 @@ import 'package:app_ahorro/widgets/custom_inputs.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class AddIngresoPage extends StatefulWidget {
+  const AddIngresoPage({super.key});
+
   @override
   _AddIngresoPageState createState() => _AddIngresoPageState();
 }

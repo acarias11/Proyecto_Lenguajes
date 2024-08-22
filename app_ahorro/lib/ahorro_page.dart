@@ -64,14 +64,14 @@ class _AhorroPageState extends State<AhorroPage> {
           padding: const EdgeInsets.all(50.0),
           child: Column(
             children: [
-              Text('Progreso',style: TextStyle(fontSize: 40)),
+              const Text('Progreso',style: TextStyle(fontSize: 40)),
               LiquidCustomProgressIndicator(
                 value: progress,
-                valueColor: AlwaysStoppedAnimation(Colors.yellow),
+                valueColor: const AlwaysStoppedAnimation(Colors.yellow),
                 backgroundColor: Colors.grey[300],
                 direction: Axis.vertical,
                 shapePath: _buildShapePath(),
-                center: Text('Meta', style: TextStyle(fontSize: 30),),
+                center: const Text('Meta', style: TextStyle(fontSize: 30),),
               ),
               const SizedBox(height: 10),
               // Lista de ahorros

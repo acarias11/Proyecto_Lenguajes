@@ -7,6 +7,8 @@ import 'package:app_ahorro/widgets/custom_inputs.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class PrimerIngresoScreen extends StatefulWidget {
+  const PrimerIngresoScreen({super.key});
+
   @override
   _PrimerIngresoScreenState createState() => _PrimerIngresoScreenState();
 }

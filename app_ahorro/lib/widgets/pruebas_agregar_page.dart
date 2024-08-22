@@ -133,7 +133,7 @@ class _PruebasAgregarPageState extends State<PruebasAgregarPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Página de Inicio'),
+        title: const Text('Página de Inicio'),
       ),
       body: Column(
         children: [

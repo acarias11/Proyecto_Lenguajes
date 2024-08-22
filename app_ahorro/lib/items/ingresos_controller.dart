@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:app_ahorro/Base De Datos/ingreso.dart';
 
 class IngresosItem extends StatelessWidget {
   const IngresosItem({super.key, required this.ingresos});

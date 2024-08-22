@@ -6,6 +6,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:app_ahorro/Base De Datos/ahorro.dart';
 
 class AgregarAhorroPage extends StatefulWidget {
+  const AgregarAhorroPage({super.key});
+
   @override
   _AgregarAhorroPageState createState() => _AgregarAhorroPageState();
 }

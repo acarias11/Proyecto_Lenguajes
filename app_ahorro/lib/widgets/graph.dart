@@ -9,12 +9,12 @@ class LineChartWidget extends StatefulWidget {
   final Color indicatorStrokeColor;
 
   const LineChartWidget({
-    Key? key,
+    super.key,
     required this.gradientColor1,
     required this.gradientColor2,
     required this.gradientColor3,
     required this.indicatorStrokeColor,
-  }) : super(key: key);
+  });
 
   @override
   _LineChartWidgetState createState() => _LineChartWidgetState();

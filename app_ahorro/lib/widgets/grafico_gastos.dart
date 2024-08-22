@@ -9,12 +9,12 @@ class LineChartGastosWidget extends StatefulWidget {
   final Color indicatorStrokeColor;
 
   const LineChartGastosWidget({
-    Key? key,
+    super.key,
     required this.gradientColor1,
     required this.gradientColor2,
     required this.gradientColor3,
     required this.indicatorStrokeColor,
-  }) : super(key: key);
+  });
 
   @override
   _LineChartGastosWidgetState createState() => _LineChartGastosWidgetState();

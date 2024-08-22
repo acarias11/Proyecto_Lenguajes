@@ -68,7 +68,7 @@ class PieChart2State extends State<PieChartSample2> {
               ),
             ),
           ),
-          Column(
+          const Column(
             mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
@@ -77,13 +77,13 @@ class PieChart2State extends State<PieChartSample2> {
                 text: 'Ingresos',
                 isSquare: true,
               ),
-              const SizedBox(height: 4),
+              SizedBox(height: 4),
               Indicator(
                 color: Colors.red,
                 text: 'Gastos',
                 isSquare: true,
               ),
-              const SizedBox(height: 18),
+              SizedBox(height: 18),
             ],
           ),
           const SizedBox(width: 28),
