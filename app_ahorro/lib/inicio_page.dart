@@ -90,7 +90,7 @@ class _InicioPageState extends State<InicioPage> {
           HistorialPage(),
           AhorroPage(),
           HomePage(),
-          UnidosGraficosPage(),
+          MetaPage(),
           SettingsScreen(),
         ],
       ),
@@ -115,7 +115,7 @@ class _InicioPageState extends State<InicioPage> {
           ),
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'home'),
           BottomNavigationBarItem(
-              icon: Icon(FontAwesomeIcons.chartPie), label: 'Grafico'),
+              icon: Icon(FontAwesomeIcons.moneyBill), label: 'Ganancias'),
           BottomNavigationBarItem(
               icon: Icon(Icons.settings), label: 'Configuracion'),
         ],

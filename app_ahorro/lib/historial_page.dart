@@ -1,10 +1,7 @@
-import 'package:app_ahorro/widgets/grafico_circular.dart';
 import 'package:flutter/material.dart';
 import 'package:app_ahorro/Base%20De%20Datos/db_helper.dart';
 import 'package:app_ahorro/Base%20De%20Datos/ingreso.dart';
 import 'Base De Datos/gasto.dart';
-import 'package:app_ahorro/widgets/graph.dart';
-import 'widgets/grafico_gastos.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HistorialPage extends StatefulWidget {
@@ -42,16 +39,20 @@ class _HistorialPageState extends State<HistorialPage> {
     });
   }
 
-
- 
   Future<void> _loadIngreso() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? selectedCuenta = prefs.getString('selectedCuenta');
     try {
       final ingresos = await DBHelper.queryIngresos();
+      final filteredIngresos = ingresos.where((ingreso) {
+        return ingreso.cuentaId == selectedCuenta;
+      }).toList();
+
       setState(() {
-        _ingreso = ingresos;
+        _ingreso = filteredIngresos;
       });
     } catch (e) {
-      print('Error al cargar gastos: $e');
+      print('Error al cargar ingresos: $e');
     }
   }
 
@@ -66,11 +67,17 @@ class _HistorialPageState extends State<HistorialPage> {
     }
   }
 
-  Future<void> _loadGastos() async {
+   Future<void> _loadGastos() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? selectedCuenta = prefs.getString('selectedCuenta');
     try {
       final gastos = await DBHelper.queryGastos();
+      final filteredGastos = gastos.where((gastos) {
+        return gastos.cuentaId == selectedCuenta;
+      }).toList();
+
       setState(() {
-        _gastos = gastos;
+        _gastos = filteredGastos;
       });
     } catch (e) {
       print('Error al cargar gastos: $e');
@@ -90,46 +97,12 @@ class _HistorialPageState extends State<HistorialPage> {
 
   @override
   Widget build(BuildContext context) {
-   
     return Scaffold(
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(40.0),
           child: Column(
             children: [
-              const SizedBox(height: 50.0),
-              const SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    SizedBox(
-                      height: 250,
-                      width: 400,
-                      child: PieChartSample2(),
-                    ),
-                    SizedBox(
-                      height: 200,
-                      width: 350,
-                      child: LineChartWidget(
-                        gradientColor1: Color.fromARGB(255, 26, 171, 13),
-                        gradientColor2: Color.fromARGB(255, 105, 168, 110),
-                        gradientColor3: Color.fromARGB(255, 57, 103, 52),
-                        indicatorStrokeColor: Color.fromARGB(255, 0, 0, 0),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 200,
-                      width: 300,
-                      child: LineChartGastosWidget(
-                        gradientColor1: Color.fromARGB(255, 212, 5, 5),
-                        gradientColor2: Color.fromARGB(255, 218, 107, 79),
-                        gradientColor3: Color.fromARGB(255, 240, 143, 16),
-                        indicatorStrokeColor: Color.fromARGB(255, 0, 0, 0),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
               // Lista de ingresos
               ListView.builder(
                 shrinkWrap: true,
@@ -140,8 +113,6 @@ class _HistorialPageState extends State<HistorialPage> {
                   Color cardColor = ingreso.monto > 900
                       ? Colors.green[900]!
                       : (Colors.green[ingreso.monto.truncate() % 1000] ?? Colors.green);
-
-                  if(ingreso.cuentaId == selectedCuenta){
                     return Card(
                       color: cardColor,
                       margin: const EdgeInsets.symmetric(vertical: 8.0),
@@ -155,15 +126,13 @@ class _HistorialPageState extends State<HistorialPage> {
                           'Ingreso: ${ingreso.descripcion} \t$_selectedCurrency${ingreso.monto}',
                           style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
+                        subtitle: Text('Fecha y hora del ingreso ${ingreso.fecha}'),
                         trailing: IconButton(
                           icon: const Icon(Icons.delete, color: Colors.red),
                           onPressed: () => _deleteIngreso(ingreso.id!),
                         ),
                       ),
                     );
-                  }else{
-                    return null;
-                  }
                 },
               ),
               // Lista de gastos
@@ -176,7 +145,6 @@ class _HistorialPageState extends State<HistorialPage> {
                   Color cardColor = gasto.monto > 900
                       ? Colors.red[900]!
                       : (Colors.red[gasto.monto.truncate() % 1000] ?? Colors.red);
-           if(gasto.cuentaId == selectedCuenta){
                   return Card(
                     color: cardColor,
                     margin: const EdgeInsets.symmetric(vertical: 8.0),
@@ -190,15 +158,13 @@ class _HistorialPageState extends State<HistorialPage> {
                         'Gasto: ${gasto.descripcion} \t$_selectedCurrency${gasto.monto}',
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
+                      subtitle: Text('Fecha y hora del gasto ${gasto.fecha}'),
                       trailing: IconButton(
                         icon: const Icon(Icons.delete, color: Colors.green),
                         onPressed: () => _deleteGastos(gasto.id!),
                       ),
                     ),
                   );
-                }else{
-                  return null;
-                }
                 },
               ),
             ],

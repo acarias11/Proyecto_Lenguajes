@@ -1,66 +1,132 @@
-import 'package:app_ahorro/widgets/grafico_circular.dart';
 import 'package:flutter/material.dart';
-import 'package:app_ahorro/widgets/graph.dart';
-import 'package:app_ahorro/widgets/grafico_gastos.dart';
+import 'package:app_ahorro/Base%20De%20Datos/db_helper.dart';
+import 'package:app_ahorro/Base De Datos/ingreso.dart';
+import 'package:app_ahorro/Base De Datos/gasto.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:liquid_progress_indicator_v2/liquid_progress_indicator.dart';
 
-class UnidosGraficosPage extends StatefulWidget {
-   const UnidosGraficosPage({super.key});
-
+class MetaPage extends StatefulWidget {
+  const MetaPage({super.key});
 
   @override
-  State<UnidosGraficosPage> createState() => _UnidosGraficosPageState();
+  _MetaPageState createState() => _MetaPageState();
 }
 
-class _UnidosGraficosPageState extends State<UnidosGraficosPage> {
+class _MetaPageState extends State<MetaPage> {
+  double _meta = 1000.0;
+  String? selectedCuenta;
+  double totalIngresos = 0;
+  double totalGastos = 0;
+  double _total = 0;
 
   @override
   void initState() {
     super.initState();
+    _loadMeta();
+    _laodComparacion();
+    _calculateTotals();
+  }
+
+  Future<void> _laodComparacion() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      selectedCuenta = prefs.getString('selectedCuenta') ?? '';
+    });
+  }
+
+  Future<void> _calculateTotals() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? selectedCuenta = prefs.getString('selectedCuenta');
+
+    if (mounted && selectedCuenta != null) {
+      try {
+        List<Ingreso> ingresos = await DBHelper.queryIngresos();
+        List<Gasto> gastos = await DBHelper.queryGastos();
+
+        List<Ingreso> filteredIngresos = ingresos.where((ingreso) {
+          return ingreso.cuentaId == selectedCuenta;
+        }).toList();
+
+        List<Gasto> filteredGastos = gastos.where((gasto) {
+          return gasto.cuentaId == selectedCuenta;
+        }).toList();
+
+        double totalIngresos = filteredIngresos.fold(0, (sum, item) => sum + item.monto);
+        double totalGastos = filteredGastos.fold(0, (sum, item) => sum + item.monto);
+
+        setState(() {
+          _total = totalIngresos - totalGastos;
+
+          if (_total < 0) {
+            _total = 0;  // Evitar números negativos
+          }
+        });
+      } catch (e) {
+        print('Error al calcular totales: $e');
+      }
+    }
+  }
+
+  Future<void> _loadMeta() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _meta = prefs.getDouble('Meta') ?? 1000.0;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.all(40.0),
-          child: Column(
-            children: [
-              SizedBox(height: 50.0),
-           SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child:  Column(
-                  children: [
-                     SizedBox(
-                      height: 250,
-                      width: 400,
-                      child:PieChartSample2()
-                    ),
-                     SizedBox(
-                      height: 200,
-                      width: 350,                      
-                      child: LineChartWidget(
-                        gradientColor1: Color.fromARGB(255, 26, 171, 13),
-                        gradientColor2: Color.fromARGB(255, 105, 168, 110),
-                        gradientColor3: Color.fromARGB(255, 57, 103, 52),
-                        indicatorStrokeColor: Color.fromARGB(255, 0, 0, 0),
-                      ),
-                    ),
-                     SizedBox(
-                      height: 200,
-                      width: 300,  
-                     child: LineChartGastosWidget(gradientColor1: Color.fromARGB(255, 212, 5, 5),
-                        gradientColor2: Color.fromARGB(255, 218, 107, 79),
-                        gradientColor3: Color.fromARGB(255, 240, 143, 16),
-                        indicatorStrokeColor: Color.fromARGB(255, 0, 0, 0),)
-                     ),
-                  ],
+    double progress = (_meta > 0) ? (_total / _meta) : 0.0;
+
+  return Scaffold(
+  body: SingleChildScrollView(
+    child: Column(
+      children: [
+        const SizedBox( height: 100,width: 100),
+        const Text('Progreso', style: TextStyle(fontSize: 40)),
+        LiquidCustomProgressIndicator(
+          value: progress,
+          valueColor: const AlwaysStoppedAnimation(Colors.yellow),
+          backgroundColor: Colors.grey[300],
+          direction: Axis.vertical,
+          shapePath: _buildShapePath(),
+          center: const Text('Meta', style: TextStyle(fontSize: 30)),
+        ),
+        const SizedBox(height: 10),
+        // Lista de ahorros
+        LayoutBuilder(
+          builder: (context, constraints) {
+            return Container(
+              width: constraints.maxWidth, // Ocupa todo el ancho disponible
+              height: 200,
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(colors: [
+                  Color.fromARGB(255, 227, 209, 222),
+                  Color.fromARGB(255, 174, 207, 202),
+                ]),
+              ),
+              child: const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Text(
+                  'NUNCA TE RINDAS, RECUERDA QUE EL QUE PERSEVERA ALCANZA',
+                  style: TextStyle(fontSize: 30),
+                  textAlign: TextAlign.center,
                 ),
               ),
-            ],
-          ),
+            );
+          },
         ),
-      ),
-    );
+      ],
+    ),
+  ),
+);
+
+  }
+  Path _buildShapePath() {
+    final path = Path();
+    path.lineTo(0, 200); 
+    path.lineTo(200, 200); 
+    path.lineTo(200, 0); 
+    return path;
   }
 }

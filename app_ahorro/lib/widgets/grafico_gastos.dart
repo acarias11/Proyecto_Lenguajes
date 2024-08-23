@@ -1,7 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:app_ahorro/Base%20De%20Datos/db_helper.dart';
 import 'package:flutter/material.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 class LineChartGastosWidget extends StatefulWidget {
   final Color gradientColor1;
   final Color gradientColor2;
@@ -30,19 +30,29 @@ class _LineChartGastosWidgetState extends State<LineChartGastosWidget> {
     syncData();
   }
 
- Future<void> syncData() async {
-    final gastos = await DBHelper.queryGastos();
-    if (mounted) {  
+  Future<void> syncData() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  String? selectedCuenta = prefs.getString('selectedCuenta');
+
+  if (mounted && selectedCuenta != null) {
+    try {
+      final gastos = await DBHelper.queryGastos();
+      final filteredGastos = gastos.where((gastos) {
+        return gastos.cuentaId == selectedCuenta;
+      }).toList();
+
       setState(() {
-        allSpots = gastos.asMap().entries.map((entry) {
+        allSpots = filteredGastos.asMap().entries.map((entry) {
           final index = entry.key.toDouble();
-          final gastos = entry.value.monto;
-          return FlSpot(index, gastos);
+          final ingreso = entry.value.monto;
+          return FlSpot(index, ingreso);
         }).toList();
       });
+    } catch (e) {
+      print('Error al sincronizar datos: $e');
     }
   }
-
+}
   @override
   Widget build(BuildContext context) {
     final lineBarsData = [

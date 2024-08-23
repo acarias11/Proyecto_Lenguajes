@@ -1,6 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:app_ahorro/Base%20De%20Datos/db_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LineChartWidget extends StatefulWidget {
   final Color gradientColor1;
@@ -29,19 +30,31 @@ class _LineChartWidgetState extends State<LineChartWidget> {
     super.initState();
     syncData();
   }
+  
+ Future<void> syncData() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  String? selectedCuenta = prefs.getString('selectedCuenta');
 
-  Future<void> syncData() async {
-    if (mounted) {  
-    final ingresos = await DBHelper.queryIngresos();
-    setState(() {
-      allSpots = ingresos.asMap().entries.map((entry) {
-        final index = entry.key.toDouble();
-        final ingreso = entry.value.monto;
-        return FlSpot(index, ingreso);
+  if (mounted && selectedCuenta != null) {
+    try {
+      final ingresos = await DBHelper.queryIngresos();
+      final filteredIngresos = ingresos.where((ingreso) {
+        return ingreso.cuentaId == selectedCuenta;
       }).toList();
-    });
+
+      setState(() {
+        allSpots = filteredIngresos.asMap().entries.map((entry) {
+          final index = entry.key.toDouble();
+          final ingreso = entry.value.monto;
+          return FlSpot(index, ingreso);
+        }).toList();
+      });
+    } catch (e) {
+      print('Error al sincronizar datos: $e');
+    }
   }
-  }
+}
+
 
   @override
   Widget build(BuildContext context) {

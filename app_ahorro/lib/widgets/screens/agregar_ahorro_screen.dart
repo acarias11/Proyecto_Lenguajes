@@ -23,7 +23,7 @@ class _AgregarAhorroPageState extends State<AgregarAhorroPage> {
     super.initState();
     _loadCuentas();
   }
-
+  
   Future<void> _loadCuentas() async {
     try {
       final cuentas = await DBHelper.queryCuentas();
@@ -148,7 +148,7 @@ class _AgregarAhorroPageState extends State<AgregarAhorroPage> {
                     validator: null,
                     nombrelabel: 'Descripción',
                     teclado: TextInputType.text,
-                    hint: 'Ingrese cual fue el gasto',
+                    hint: 'Ingrese una descripcion del ahorro',
                     icono: FontAwesomeIcons.pen,
                   ),
                   DropdownButton<Cuenta>(
@@ -178,7 +178,6 @@ class _AgregarAhorroPageState extends State<AgregarAhorroPage> {
                             ])),
                         child: OutlinedButton(
                           onPressed: () {
-                            //if(formkey.currentState!.validate()) return;
                             _saveGasto();
                           },
                           child: const Text(

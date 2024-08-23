@@ -38,17 +38,13 @@ class MyApp extends StatelessWidget {
         future: checkLoginStatus(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            // Muestra un indicador de carga mientras esperas
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            // Maneja el error en caso de fallo
             return const Center(child: Text('Error al verificar el estado de la sesión'));
           } else {
             if (snapshot.data == true) {
-              // Redirige a la pantalla principal si el usuario está logueado
               return const InicioPage();
             } else {
-              // Redirige a la pantalla de login si el usuario no está logueado
               return const WelcomeScreenPage();
             }
           }

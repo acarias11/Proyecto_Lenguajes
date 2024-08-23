@@ -54,79 +54,134 @@ class _SetAccountDetailsScreenState extends State<SetAccountDetailsScreen> {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Set Account Details'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text('Set Account Details', style: TextStyle(fontSize: 24)),
-              const SizedBox(height: 20),
-              TextFormField(
-                decoration: const InputDecoration(labelText: 'Account Type'),
-                onSaved: (value) {
-                  _tipoCuenta = value ?? '';
-                },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter the account type';
-                  }
-                  return null;
-                },
+      body: SingleChildScrollView(
+        
+        child: Stack(
+             children: [
+            Container(
+              height: 900,
+              width: 600,
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Color.fromARGB(255, 8, 90, 8),
+                    Color.fromARGB(255, 3, 49, 23),
+                  ],
+                ),
               ),
-              const SizedBox(height: 16),
-              TextFormField(
-                decoration: const InputDecoration(labelText: 'Account Name'),
-                onSaved: (value) {
-                  _nombreCuenta = value ?? '';
-                },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter the account name';
-                  }
-                  return null;
-                },
+               child: const Padding(
+                padding: EdgeInsets.only(top: 60.0, left: 22),
+                child: Text(
+                  'Agrega detalles de \ntu Cuenta!',
+                  style: TextStyle(
+                    fontSize: 30,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
-              const SizedBox(height: 16),
-              
-              DropdownButtonFormField<String>(
-                decoration: const InputDecoration(labelText: 'Currency'),
-                items: const [
-                  DropdownMenuItem(value: 'Lempira', child: Text('Lempira')),
-                  DropdownMenuItem(value: 'Euro', child: Text('Euro')),
-                  DropdownMenuItem(value: 'Dólar', child: Text('Dólar')),
-                ],
-                onChanged: (value) {
-                  setState(() {
-                    _moneda = value;
-                  });
-                },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please select a currency';
-                  }
-                  return null;
-                },
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 200.0),
+              child: Container(
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(40),
+                    topRight: Radius.circular(40),
+                  ),
+                  color: Colors.white,
+                ),
+                height: 690,
+                width: 600,            
+           child:  Form(
+            key: _formKey,
+              child: Padding(
+              padding: const EdgeInsets.only(left: 18.0, right: 18),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TextFormField(
+                  decoration: const InputDecoration(labelText: 'Account Type',
+                  hintText: 'Ingrese el tipo de cuenta',
+                  ),
+                  onSaved: (value) {
+                    _tipoCuenta = value ?? '';
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter the account type';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  decoration: const InputDecoration(labelText: 'Account Name'),
+                  onSaved: (value) {
+                    _nombreCuenta = value ?? '';
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter the account name';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
+                
+                DropdownButtonFormField<String>(
+                  decoration: const InputDecoration(labelText: 'Currency'),
+                  items: const [
+                    DropdownMenuItem(value: 'Lempira', child: Text('Lempira')),
+                    DropdownMenuItem(value: 'Euro', child: Text('Euro')),
+                    DropdownMenuItem(value: 'Dólar', child: Text('Dólar')),
+                  ],
+                  onChanged: (value) {
+                    setState(() {
+                      _moneda = value;
+                    });
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please select a currency';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 70),
+                 Container(
+                        height: 55,
+                        width: 300,
+                        decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              Color.fromARGB(255, 11, 103, 46),
+                              Color.fromARGB(255, 1, 71, 20),
+                            ],
+                          ),
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                        ),
+                        child: TextButton(
+                           onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      _formKey.currentState!.save();
+                      agregarUsuarios(context);
+                    }
+                  },
+                          child: const Text(
+                            'Guardar',
+                            style: TextStyle(color: Colors.white, fontSize: 20),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    _formKey.currentState!.save();
-                    agregarUsuarios(context);
-                  }
-                },
-                child: const Text('Register Account'),
-              ),
-            ],
-          ),
+            ),
+            )],
         ),
       ),
     );
   }
 }
-

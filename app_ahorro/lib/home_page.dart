@@ -15,7 +15,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  String _selectedCurrency = '';
+  String _selectedCurrency = 'L';
   List<Ingreso> _ingreso = [];
   List<Gasto> _gastos = [];
 
@@ -67,15 +67,15 @@ class _HomePageState extends State<HomePage> {
     String? selectedCuenta = prefs.getString('selectedCuenta');
     try {
       final gastos = await DBHelper.queryGastos();
-      final filteredGastos = gastos.where((ingreso) {
-        return ingreso.cuentaId == selectedCuenta;
+      final filteredGastos = gastos.where((gastos) {
+        return gastos.cuentaId == selectedCuenta;
       }).toList();
 
       setState(() {
         _gastos = filteredGastos;
       });
     } catch (e) {
-      print('Error al cargar ingresos: $e');
+      print('Error al cargar gastos: $e');
     }
   }
 
@@ -173,7 +173,6 @@ class _HomePageState extends State<HomePage> {
                   Color cardColor = gasto.monto > 900
                       ? Colors.red[900]!
                       : (Colors.red[gasto.monto.truncate() % 1000] ?? Colors.red);
-
                   return Card(
                     color: cardColor,
                     margin: const EdgeInsets.symmetric(vertical: 8.0),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:app_ahorro/Base%20De%20Datos/db_helper.dart';
 import 'package:app_ahorro/Base%20De%20Datos/cuenta.dart';
@@ -12,6 +13,8 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   final TextEditingController _goalController = TextEditingController();
+  final TextEditingController _metaController = TextEditingController();
+  double _meta = 1000.0;
   double _goal = 1000.0;
   List<Cuenta> _cuentas = [];
   String? _selectedCurrency;
@@ -28,6 +31,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void initState() {
     super.initState();
     _loadGoal();
+    _loadMeta();
     _loadCurrency();
     _loadCuentas();
     _loadSelectedCuenta();
@@ -72,6 +76,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
       prefs.setDouble('goal', _goal);
     });
   }
+  
+  Future<void> _loadMeta() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _meta = prefs.getDouble('Meta a corto plazo') ?? _meta;
+      _metaController.text = _meta.toString();
+    });
+  }
+
+  Future<void> _saveMeta() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _meta = double.tryParse(_metaController.text) ?? _meta;
+      prefs.setDouble('Meta a corto plazo', _meta);
+    });
+  }
 
   Future<void> _loadCurrency() async {
     final prefs = await SharedPreferences.getInstance();
@@ -98,6 +118,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Configuraciones'),
+                  automaticallyImplyLeading: false,
       ),
       body: ListView(
         padding: const EdgeInsets.all(16.0),
@@ -117,10 +138,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           ElevatedButton(
             onPressed: _saveGoal,
-            child: const Text('Guardar Meta'),
+            child: const Text('Guardar meta de Ahoro'),
           ),
           const SizedBox(height: 20),
-          
+            // Cambiar Meta de Ahorro
+          ListTile(
+            title: const Text('Meta a Corto plazo'),
+            leading: const Icon(FontAwesomeIcons.moneyBill),
+            subtitle: TextField(
+              controller: _metaController,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(
+                labelText: 'Ingrese su meta',
+                border: OutlineInputBorder(),
+              ),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: _saveMeta,
+            child: const Text('Guardar Meta a corto plazo'),
+          ),
+          const SizedBox(height: 20),
           // Cambiar Moneda
           ListTile(
             title: const Text('Cambiar Moneda'),

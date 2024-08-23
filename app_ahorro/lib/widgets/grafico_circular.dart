@@ -4,6 +4,7 @@ import 'package:app_ahorro/Base%20De%20Datos/db_helper.dart';
 import 'package:app_ahorro/Base%20De%20Datos/ingreso.dart';
 import 'package:app_ahorro/Base%20De%20Datos/gasto.dart';
 import 'package:app_ahorro/widgets/inidcator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PieChartSample2 extends StatefulWidget {
   const PieChartSample2({super.key});
@@ -23,18 +24,32 @@ class PieChart2State extends State<PieChartSample2> {
     _calculateTotals();
   }
 
-  Future<void> _calculateTotals() async {
-    // Cargar ingresos y calcular el total
-    List<Ingreso> ingresos = await DBHelper.queryIngresos();
-    List<Gasto> gastos = await DBHelper.queryGastos();
-    if (mounted) {  
+Future<void> _calculateTotals() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  String? selectedCuenta = prefs.getString('selectedCuenta');
 
-    setState(() {
-      totalIngresos = ingresos.fold(0, (sum, item) => sum + item.monto);
-      totalGastos = gastos.fold(0, (sum, item) => sum + item.monto);
-    });
+  if (mounted && selectedCuenta != null) {
+    try {
+      List<Ingreso> ingresos = await DBHelper.queryIngresos();
+      List<Gasto> gastos = await DBHelper.queryGastos();
+
+      List<Ingreso> filteredIngresos = ingresos.where((ingreso) {
+        return ingreso.cuentaId == selectedCuenta;
+      }).toList();
+
+      List<Gasto> filteredGastos = gastos.where((gasto) {
+        return gasto.cuentaId == selectedCuenta;
+      }).toList();
+      setState(() {
+        totalIngresos = filteredIngresos.fold(0, (sum, item) => sum + item.monto);
+        totalGastos = filteredGastos.fold(0, (sum, item) => sum + item.monto);
+      });
+    } catch (e) {
+      print('Error al calcular totales: $e');
     }
   }
+}
+
 
   @override
   Widget build(BuildContext context) {

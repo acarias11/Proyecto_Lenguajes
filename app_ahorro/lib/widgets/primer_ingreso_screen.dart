@@ -1,4 +1,3 @@
-import 'package:app_ahorro/inicio_page.dart';
 import 'package:flutter/material.dart';
 import 'package:app_ahorro/Base%20De%20Datos/db_helper.dart';
 import 'package:app_ahorro/Base%20De%20Datos/ingreso.dart';
@@ -163,7 +162,7 @@ class _PrimerIngresoScreenState extends State<PrimerIngresoScreen> {
                           onPressed: () {
                             //if(formkey.currentState!.validate()) return;
                             _saveIngreso();
-                          MaterialPageRoute(builder: (context) => const InicioPage());
+                            Navigator.of(context).popAndPushNamed('/inicio');
                           },
                           child: const Text(
                             'Guardar Ingreso',

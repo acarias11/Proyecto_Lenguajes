@@ -45,12 +45,12 @@ class _AhorroPageState extends State<AhorroPage> {
 
       setState(() {
         _ahorro = filteredAhorro;
+        _totalAhorros = _ahorro.fold(0.0, (sum, item) => sum + item.monto);
       });
     } catch (e) {
       print('Error al cargar ingresos: $e');
     }
   }
-
   Future<void> _deleteAhorro(int id) async {
     try {
       await DBHelper.deleteAhorro(id);

@@ -1,5 +1,3 @@
-import 'package:app_ahorro/login_page.dart';
-import 'package:app_ahorro/registro_page.dart';
 import 'package:flutter/material.dart';
 
 class WelcomeScreenPage extends StatelessWidget {

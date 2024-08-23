@@ -70,7 +70,7 @@ class _AddIngresoPageState extends State<AddIngresoPage> {
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(30.0),
         child: AppBar(
-          automaticallyImplyLeading: true,
+          automaticallyImplyLeading: false,
           backgroundColor: Colors.transparent,
           elevation: 0,
           flexibleSpace: Container(
